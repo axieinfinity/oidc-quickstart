@@ -4,7 +4,8 @@ export default async function handler(req, res){
     try {
         await fetch("<https://api-gateway.skymavis.com/account/userinfo>",{
             headers : {
-                'Authorization': 'Bearer ' + access_token
+                'Authorization': 'Bearer ' + access_token,
+                'X-API-Key': process.env.API_KEY
             },
             method: 'GET',
         }).then((response)=>response.json())
