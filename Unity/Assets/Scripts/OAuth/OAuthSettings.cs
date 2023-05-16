@@ -10,8 +10,7 @@ namespace OAuth
         /// <summary>
         /// OAuth endpoint
         /// </summary>
-        // public string ServerURL = "https://YOUR_SERVER_URL";
-        public string ServerURL = "https://ronstakingcalculator.vercel.app/login";
+        public string ServerURL = "https://YOUR_SERVER_URL";
 
         /// <summary>
         /// OAuth scopes
@@ -26,6 +25,6 @@ namespace OAuth
         /// <summary>
         /// userinfo url
         /// </summary>
-        public string UserInfoURL = "https://ronstakingcalculator.vercel.app/api/oauth2/userinfo";
+        public string UserInfoURL = "https://YOUR_SERVER_URL/api/oauth2/userinfo";
     }
 }
