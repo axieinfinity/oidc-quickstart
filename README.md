@@ -1,11 +1,10 @@
-# unity-sso-quickstart
-Unity Quickstart example repository 
+# Unity SSO quickstart
 
-This quickstart guide shows you how to integrate Sky Mavis Account into a [sample Unity app](https://github.com/axieinfinity/unity-sso-quickstart/tree/main).
+This quickstart guide shows you how to integrate Sky Mavis Account into a sample Unity app.
 
 In this guide, you do the following:
 
-1. Register your application on the Developer Portal
+1. Register your application on the Developer Portal.
 2. Clone the sample repository
 3. Configure the settings in your app
 4. Set up a web server
@@ -20,28 +19,69 @@ Register your application on the Developer Portal as described in [Get started](
 
 ## Step 2. Clone the sample repo
 
-1. Clone the sample code repository by running the following command:
+1. Clone this repository by running the following command:
 
-`git clone git@github.com:axieinfinity/unity-sso-quickstart.git`
+```bash
+git clone git@github.com:axieinfinity/unity-sso-quickstart.git
+```
 
 2. Navigate to the directory with the code.
+
+```bash
+cd unity-sso-quickstart
+```
 
 ## Step 3. Configure the settings in your app
 
 Open `Unity/Assets/Scripts/OAuth/OAuthSettings.cs` and replace the `ServerURL`, `TokenURL`, and `UserInfoURL` with your values.
 
+```csharp
+using System;
+using UnityEngine;
+
+namespace OAuth
+{
+    [CreateAssetMenu(fileName = "OAuthSettings", menuName = "Create OAuthSettings Object", order = 1)]
+    [Serializable]
+    public class OAuthSettings : ScriptableObject
+    {
+        /// <summary>
+        /// OAuth endpoint
+        /// </summary>
+        public string ServerURL = "https://YOUR_SERVER_URL";
+
+        /// <summary>
+        /// OAuth scopes
+        /// </summary>
+        public string Scopes = "openid offline offline_access";
+
+        /// <summary>
+        /// token url for exchanging the auth code for an access token
+        /// </summary>
+        public string TokenURL = "https://YOUR_SERVER_URL/api/oauth2/token";
+
+        /// <summary>
+        /// userinfo URL
+        /// </summary>
+        public string UserInfoURL = "https://YOUR_SERVER_URL/api/oauth2/userinfo";
+    }
+}
+```
+
 ## Step 4. Set up a web server
 
-1. In `NextJS-web-server/`, create an `.env` file with the following content or edit the existing `.env.example` file:
-   1. Client ID and client secret from the Developer Console.
+1. In `NextJS-web-server/`, create an `.env` file with the following content:
+   1. Your client ID and client secret from the Developer Console.
    2. Your own callback URL and deep link URL.
 
-```text .env
+```text
 CALLBACK_URL=https://YOUR_APP_URL/oauth2/callback
 CLIENT_ID=YOUR_CLIENT_ID
 CLIENT_SECRET=YOUR_CLIENT_SECRET
 DEEPLINK_URL=demosso://platform
 ```
+
+Alternatively, you can edit the existing `.env.example` file. Make sure to remove the `.example` extension from the file name.
 
 2. Deploy the app to a web server of your choice.
 
