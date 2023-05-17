@@ -22,13 +22,13 @@ Register your application on the Developer Portal as described in [Get started](
 1. Clone this repository by running the following command:
 
 ```bash
-git clone git@github.com:axieinfinity/unity-sso-quickstart.git
+git clone git@github.com:axieinfinity/sso-quickstart.git
 ```
 
 2. Navigate to the directory with the code.
 
 ```bash
-cd unity-sso-quickstart
+cd sso-quickstart
 ```
 
 ## Step 3. Configure the settings in your app
