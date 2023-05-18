@@ -1,5 +1,5 @@
 import { AuthorizationQueryParams } from "./authorize-code";
-import { OAuth2Client, generateQueryString } from "./client";
+import { SkyMavisOAuth2Client, generateQueryString } from "./client";
 import { getWebCrypto } from "./helpers";
 
 export type GetImplicitParams = {
@@ -15,7 +15,7 @@ export type ImplicitQueryParams = {
 } & Omit<AuthorizationQueryParams, "response_type">;
 
 export class ImplicitToken {
-  constructor(private readonly client: OAuth2Client) {}
+  constructor(private readonly client: SkyMavisOAuth2Client) {}
 
   async getImplicitUri(params: GetImplicitParams): Promise<string> {
     const webCrypto = getWebCrypto();

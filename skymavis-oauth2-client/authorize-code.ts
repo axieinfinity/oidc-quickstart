@@ -1,4 +1,4 @@
-import { OAuth2Client, generateQueryString } from "./client";
+import { SkyMavisOAuth2Client, generateQueryString } from "./client";
 import { getCodeChallenge, getWebCrypto } from "./helpers";
 
 export type ClientSettings = {
@@ -9,18 +9,13 @@ export type ClientSettings = {
   clientSecret?: string;
 };
 
-export type GetAuthorizeParams = {
+export type GetAuthorizeUriParams = {
   redirectUri: string;
   state?: string;
   codeVerifier?: string;
   scope?: string[];
 };
-export type GetImplicitParams = {
-  redirectUri: string;
-  state?: string;
-  nonce?: string;
-  scope?: string[];
-};
+
 export type GetTokenParams = {
   code: string;
   redirect_uri: string;
@@ -37,39 +32,11 @@ export type AuthorizationQueryParams = {
   code_challenge_method?: "plain" | "S256";
   code_challenge?: string;
 };
-export type ImplicitQueryParams = {
-  nonce: string;
-  response_type: "token" | "id_token" | "id_token token";
-} & Omit<AuthorizationQueryParams, "response_type">;
 
 export class AuthorizationCode {
-  constructor(private readonly client: OAuth2Client) {}
+  constructor(private readonly client: SkyMavisOAuth2Client) {}
 
-  async getImplicitUri(params: GetImplicitParams): Promise<string> {
-    const webCrypto = getWebCrypto();
-    const query: ImplicitQueryParams = {
-      client_id: this.client.settings.clientId,
-      response_type: "id_token",
-      redirect_uri: params.redirectUri,
-      state: webCrypto.randomUUID(),
-      nonce: webCrypto.randomUUID(),
-    };
-    if (params.state) {
-      query.state = params.state;
-    }
-    if (params.scope) {
-      query.scope = params.scope.join(" ");
-    }
-    if (params.nonce) {
-      query.scope = params.nonce;
-    }
-
-    return `${this.client.getEndpoint(
-      "authorizationEndpoint"
-    )}?${generateQueryString(query)}`;
-  }
-
-  async getAuthorizeUri(params: GetAuthorizeParams): Promise<string> {
+  async getAuthorizeUri(params: GetAuthorizeUriParams): Promise<string> {
     const webCrypto = getWebCrypto();
     const codeChallenge = params.codeVerifier
       ? await getCodeChallenge(params.codeVerifier)
@@ -113,7 +80,7 @@ export class AuthorizationCode {
           "Content-Type": "application/x-www-form-urlencoded",
         },
       })
-      .then((resp) => {
+      .then((resp: any) => {
         if (resp.ok) {
           return resp.json();
         }

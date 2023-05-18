@@ -15,6 +15,8 @@ export type ClientSettings = {
 
 export type OAuth2Endpoint = "tokenEndpoint" | "authorizationEndpoint";
 
+const SSO_SERVER = "https://athena.skymavis.com";
+
 export const generateQueryString = (params: Record<string, any>) => {
   return new URLSearchParams(
     Object.fromEntries(
@@ -23,18 +25,18 @@ export const generateQueryString = (params: Record<string, any>) => {
   ).toString();
 };
 
-export class OAuth2Client {
+export class SkyMavisOAuth2Client {
   settings: ClientSettings;
   constructor(settings: ClientSettings) {
     this.settings = settings;
-    if (!this.settings.fetch) {
-      this.settings.fetch = (...args) => globalThis.fetch(...args);
-    }
+    this.settings.server ||= SSO_SERVER;
+    this.settings.fetch ||= (...args) => globalThis.fetch(...args);
   }
 
   get authorizationCode(): AuthorizationCode {
     return new AuthorizationCode(this);
   }
+
   get implicitToken(): ImplicitToken {
     return new ImplicitToken(this);
   }
@@ -45,10 +47,10 @@ export class OAuth2Client {
     }
     switch (endpoint) {
       case "tokenEndpoint":
-        return resolveUrl("/token", this.settings.server);
+        return resolveUrl("/oauth2/token", this.settings.server);
 
       case "authorizationEndpoint": {
-        return resolveUrl("/authorize", this.settings.server);
+        return resolveUrl("/oauth2/auth", this.settings.server);
       }
     }
   }
