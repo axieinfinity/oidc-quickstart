@@ -1,6 +1,5 @@
 import { AuthorizationQueryParams } from "./authorize-code";
 import { SkyMavisOAuth2Client, generateQueryString } from "./client";
-import { getWebCrypto } from "./helpers";
 
 export type GetImplicitParams = {
   redirectUri: string;
@@ -18,13 +17,12 @@ export class ImplicitToken {
   constructor(private readonly client: SkyMavisOAuth2Client) {}
 
   async getImplicitUri(params: GetImplicitParams): Promise<string> {
-    const webCrypto = getWebCrypto();
     const query: ImplicitQueryParams = {
       client_id: this.client.settings.clientId,
       response_type: "token",
       redirect_uri: params.redirectUri,
-      state: webCrypto.randomUUID(),
-      nonce: webCrypto.randomUUID(),
+      state: crypto.randomUUID(),
+      nonce: crypto.randomUUID(),
     };
 
     if (params.state) {

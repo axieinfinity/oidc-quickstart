@@ -1,5 +1,6 @@
 import { SkyMavisOAuth2Client, generateQueryString } from "./client";
-import { getCodeChallenge, getWebCrypto } from "./helpers";
+import { getCodeChallenge } from "./helpers";
+import { OAuth2Error } from "./error";
 
 export type ClientSettings = {
   server: string;
@@ -15,12 +16,15 @@ export type GetAuthorizeUriParams = {
   codeVerifier?: string;
   scope?: string[];
 };
+export type AuthenticateMethod = "client_secret_basic" | "client_secret_post";
 
 export type GetTokenParams = {
   code: string;
-  redirect_uri: string;
-  code_verifier?: string;
-  state?: string;
+  apiKey: string;
+  redirectUri: string;
+  clientSecret: string;
+  authorizeMethod?: AuthenticateMethod;
+  codeVerifier?: string;
 };
 
 export type AuthorizationQueryParams = {
@@ -37,7 +41,6 @@ export class AuthorizationCode {
   constructor(private readonly client: SkyMavisOAuth2Client) {}
 
   async getAuthorizeUri(params: GetAuthorizeUriParams): Promise<string> {
-    const webCrypto = getWebCrypto();
     const codeChallenge = params.codeVerifier
       ? await getCodeChallenge(params.codeVerifier)
       : undefined;
@@ -48,7 +51,7 @@ export class AuthorizationCode {
       redirect_uri: params.redirectUri,
       code_challenge_method: codeChallenge?.[0],
       code_challenge: codeChallenge?.[1],
-      state: webCrypto.randomUUID(),
+      state: crypto.randomUUID(),
     };
     if (params.state) {
       query.state = params.state;
@@ -62,31 +65,50 @@ export class AuthorizationCode {
     )}?${generateQueryString(query)}`;
   }
 
-  async getToken(params: Record<string, any>): Promise<string>;
-  async getToken(params: GetTokenParams) {
-    const query = {
-      client_id: this.client.settings.clientId,
-      ...params,
+  async getToken(params: GetTokenParams): Promise<TokenResponse> {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "X-API-KEY": params.apiKey,
     };
-    const url = `${this.client.getEndpoint(
-      "tokenEndpoint"
-    )}?${generateQueryString(query)}`;
 
-    const data = await this.client.settings
-      .fetch?.(url, {
+    const query = {
+      grant_type: "authorization_code",
+      code: params.code,
+      redirect_uri: params.redirectUri,
+      code_verifier: params.codeVerifier,
+    } as Record<string, string>;
+
+    if (params?.authorizeMethod === "client_secret_basic") {
+      headers.Authorization = `Basic ${btoa(
+        `${this.client.settings.clientId}:${params.clientSecret}`
+      )}`;
+      query.token_endpoint_auth_method = "client_secret_basic";
+    } else {
+      query.client_id = this.client.settings.clientId;
+      query.client_secret = params.clientSecret || "";
+    }
+
+    const resp = await this.client.settings.fetch?.(
+      this.client.getEndpoint("tokenEndpoint"),
+      {
         method: "POST",
         body: generateQueryString(query),
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      })
-      .then((resp: any) => {
-        if (resp.ok) {
-          return resp.json();
-        }
-        return resp;
-      });
+        headers,
+      }
+    );
+    if (!resp) {
+      throw new Error("Cannot parse the response from server");
+    }
+    if (resp.ok) {
+      return (await resp.json()) as TokenResponse;
+    }
 
-    return data;
+    throw await this.client.handleErrorResponse(resp);
   }
 }
+export type TokenResponse = {
+  access_token: string;
+  expires_in: number;
+  scope: string;
+  token_type: string;
+};
