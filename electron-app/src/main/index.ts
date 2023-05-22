@@ -85,9 +85,6 @@ app.on('open-url', (_event, url) => {
   }
 })
 
-console.log('process.env.API_KEY', process.env.API_KEY)
-console.log('process.env.API_KEY', process.env.CLIENT_SECRET)
-
 ipcMain.handle('request_login', async (_, args) => {
   const codeVerifier = await generateCodeVerifier()
   const uri = await client.authorizationCode.getAuthorizeUri({
@@ -95,16 +92,22 @@ ipcMain.handle('request_login', async (_, args) => {
     codeVerifier
   })
   shell.openExternal(uri)
-  const query = await codePromise
-  const token = await client.authorizationCode.getToken({
-    code: query.code,
-    codeVerifier: codeVerifier,
-    redirectUri: 'foo://callback',
-    apiKey: process.env.API_KEY,
-    clientSecret: process.env.CLIENT_SECRET
-  })
-  console.log('token', token)
-  return token
+  const { code } = await codePromise
+
+  const tokenResponse = await fetch('http://localhost:3000/api/oauth2/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      code,
+      codeVerifier
+    })
+  }).then((res) => res.json())
+
+  console.log('token', tokenResponse)
+
+  tokenResponse
 })
 
 // In this file you can include the rest of your app"s specific main process
