@@ -8,13 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { generateQueryString } from "./client";
-import { getCodeChallenge } from "./helpers";
+import { getCodeChallenge, getWebCrypto } from "./helpers";
 export class AuthorizationCode {
     constructor(client) {
         this.client = client;
     }
     getAuthorizeUri(params) {
         return __awaiter(this, void 0, void 0, function* () {
+            const webCrypto = getWebCrypto();
             const codeChallenge = params.codeVerifier
                 ? yield getCodeChallenge(params.codeVerifier)
                 : undefined;
@@ -24,7 +25,7 @@ export class AuthorizationCode {
                 redirect_uri: params.redirectUri,
                 code_challenge_method: codeChallenge === null || codeChallenge === void 0 ? void 0 : codeChallenge[0],
                 code_challenge: codeChallenge === null || codeChallenge === void 0 ? void 0 : codeChallenge[1],
-                state: crypto.randomUUID(),
+                state: webCrypto.randomUUID(),
             };
             if (params.state) {
                 query.state = params.state;

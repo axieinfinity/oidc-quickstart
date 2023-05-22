@@ -8,18 +8,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { generateQueryString } from "./client";
+import { getWebCrypto } from "./helpers";
 export class ImplicitToken {
     constructor(client) {
         this.client = client;
     }
     getImplicitUri(params) {
         return __awaiter(this, void 0, void 0, function* () {
+            const webCrypto = getWebCrypto();
             const query = {
                 client_id: this.client.settings.clientId,
                 response_type: "token",
                 redirect_uri: params.redirectUri,
-                state: crypto.randomUUID(),
-                nonce: crypto.randomUUID(),
+                state: webCrypto.randomUUID(),
+                nonce: webCrypto.randomUUID(),
             };
             if (params.state) {
                 query.state = params.state;
