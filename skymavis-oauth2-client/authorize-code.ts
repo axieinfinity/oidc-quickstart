@@ -1,5 +1,5 @@
 import { SkyMavisOAuth2Client, generateQueryString } from "./client";
-import { getCodeChallenge } from "./helpers";
+import { getCodeChallenge, getWebCrypto } from "./helpers";
 import { OAuth2Error } from "./error";
 
 export type ClientSettings = {
@@ -41,6 +41,7 @@ export class AuthorizationCode {
   constructor(private readonly client: SkyMavisOAuth2Client) {}
 
   async getAuthorizeUri(params: GetAuthorizeUriParams): Promise<string> {
+    const webCrypto = getWebCrypto();
     const codeChallenge = params.codeVerifier
       ? await getCodeChallenge(params.codeVerifier)
       : undefined;
@@ -51,7 +52,7 @@ export class AuthorizationCode {
       redirect_uri: params.redirectUri,
       code_challenge_method: codeChallenge?.[0],
       code_challenge: codeChallenge?.[1],
-      state: crypto.randomUUID(),
+      state: webCrypto.randomUUID(),
     };
     if (params.state) {
       query.state = params.state;
