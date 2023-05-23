@@ -1,59 +1,27 @@
 import { SkyMavisOAuth2Client, generateQueryString } from "./client";
 import { getCodeChallenge, getWebCrypto } from "./helpers";
-import { OAuth2Error } from "./error";
-
-export type ClientSettings = {
-  server: string;
-  clientId: string;
-  authorizeEndpoint?: string;
-  tokenEndpoint?: string;
-  clientSecret?: string;
-};
-
-export type GetAuthorizeUriParams = {
-  redirectUri: string;
-  state?: string;
-  codeVerifier?: string;
-  scope?: string[];
-};
-export type AuthenticateMethod = "client_secret_basic" | "client_secret_post";
-
-export type GetTokenParams = {
-  code: string;
-  apiKey: string;
-  redirectUri: string;
-  clientSecret: string;
-  authorizeMethod?: AuthenticateMethod;
-  codeVerifier?: string;
-};
-
-export type AuthorizationQueryParams = {
-  response_type: "code";
-  client_id: string;
-  redirect_uri: string;
-  state?: string;
-  scope?: string;
-  code_challenge_method?: "plain" | "S256";
-  code_challenge?: string;
-};
 
 export class AuthorizationCode {
   constructor(private readonly client: SkyMavisOAuth2Client) {}
 
   async getAuthorizeUri(params: GetAuthorizeUriParams): Promise<string> {
     const webCrypto = getWebCrypto();
-    const codeChallenge = params.codeVerifier
-      ? await getCodeChallenge(params.codeVerifier)
-      : undefined;
 
     const query: AuthorizationQueryParams = {
       client_id: this.client.settings.clientId,
       response_type: "code",
       redirect_uri: params.redirectUri,
-      code_challenge_method: codeChallenge?.[0],
-      code_challenge: codeChallenge?.[1],
       state: webCrypto.randomUUID(),
     };
+
+    if (params.codeVerifier) {
+      const [algorithm, codeChallange] = await getCodeChallenge(
+        params.codeVerifier
+      );
+      query.code_challenge_method = algorithm;
+      query.code_challenge = codeChallange;
+    }
+
     if (params.state) {
       query.state = params.state;
     }
@@ -76,8 +44,11 @@ export class AuthorizationCode {
       grant_type: "authorization_code",
       code: params.code,
       redirect_uri: params.redirectUri,
-      code_verifier: params.codeVerifier,
     } as Record<string, string>;
+
+    if (params.codeVerifier) {
+      query.code_verifier = params.codeVerifier;
+    }
 
     if (params?.authorizeMethod === "client_secret_basic") {
       headers.Authorization = `Basic ${btoa(
@@ -107,9 +78,37 @@ export class AuthorizationCode {
     throw await this.client.handleErrorResponse(resp);
   }
 }
+
+export type GetAuthorizeUriParams = {
+  redirectUri: string;
+  state?: string;
+  codeVerifier?: string;
+  scope?: string[];
+};
+export type AuthenticateMethod = "client_secret_basic" | "client_secret_post";
+
 export type TokenResponse = {
   access_token: string;
   expires_in: number;
   scope: string;
   token_type: string;
+};
+
+export type GetTokenParams = {
+  code: string;
+  apiKey: string;
+  redirectUri: string;
+  clientSecret: string;
+  authorizeMethod?: AuthenticateMethod;
+  codeVerifier?: string;
+};
+
+export type AuthorizationQueryParams = {
+  response_type: "code";
+  client_id: string;
+  redirect_uri: string;
+  state?: string;
+  scope?: string;
+  code_challenge_method?: "plain" | "S256";
+  code_challenge?: string;
 };

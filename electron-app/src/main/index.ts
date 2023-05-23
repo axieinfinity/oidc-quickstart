@@ -94,7 +94,7 @@ ipcMain.handle('request_login', async (_, args) => {
   shell.openExternal(uri)
   const { code } = await codePromise
 
-  const tokenResponse = await fetch('http://localhost:3000/api/oauth2/token', {
+  const tokenResponse = await fetch('http://localhost:8080/oauth2/token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
