@@ -1,0 +1,23 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx tsx server.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/cors": "^8.2.1",
+    "@fastify/formbody": "^7.4.0",
+    "dotenv": "^16.0.3",
+    "fastify": "^4.17.0",
+    "ky": "^0.33.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.1.0",
+    "typescript": "5.0.4"
+  }
+}

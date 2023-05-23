@@ -16,17 +16,17 @@ export class AuthorizationCode {
     getAuthorizeUri(params) {
         return __awaiter(this, void 0, void 0, function* () {
             const webCrypto = getWebCrypto();
-            const codeChallenge = params.codeVerifier
-                ? yield getCodeChallenge(params.codeVerifier)
-                : undefined;
             const query = {
                 client_id: this.client.settings.clientId,
                 response_type: "code",
                 redirect_uri: params.redirectUri,
-                code_challenge_method: codeChallenge === null || codeChallenge === void 0 ? void 0 : codeChallenge[0],
-                code_challenge: codeChallenge === null || codeChallenge === void 0 ? void 0 : codeChallenge[1],
                 state: webCrypto.randomUUID(),
             };
+            if (params.codeVerifier) {
+                const [algorithm, codeChallange] = yield getCodeChallenge(params.codeVerifier);
+                query.code_challenge_method = algorithm;
+                query.code_challenge = codeChallange;
+            }
             if (params.state) {
                 query.state = params.state;
             }
@@ -47,8 +47,10 @@ export class AuthorizationCode {
                 grant_type: "authorization_code",
                 code: params.code,
                 redirect_uri: params.redirectUri,
-                code_verifier: params.codeVerifier,
             };
+            if (params.codeVerifier) {
+                query.code_verifier = params.codeVerifier;
+            }
             if ((params === null || params === void 0 ? void 0 : params.authorizeMethod) === "client_secret_basic") {
                 headers.Authorization = `Basic ${btoa(`${this.client.settings.clientId}:${params.clientSecret}`)}`;
                 query.token_endpoint_auth_method = "client_secret_basic";
