@@ -10,8 +10,9 @@ The SDK is written in Javascript, design with no dependencies, able to use on al
 Sky Mavis OAuth2 Client expose methods implement the SSO Flow.
 
 - [x] `Authorization Code Flow` grant with optional PKCE support.
-- [ ] `Implicit Flow` directly grant token.
+- [x] `Implicit Flow` directly grant token.
 - [ ] `password` and `client_credentials` grant
+- [x] get user info
 
 ## Usages
 
