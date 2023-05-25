@@ -143,6 +143,21 @@ location.href = url;
 The access token is directly included in the response from the authorization server,
 making it accessible to the client-side JavaScript code.
 
+#### 2. Handle Implicit Token Flow Callback:
+
+Extract access_token from hash params:
+
+```ts
+const { access_token, error, error_description } = extractQueryParams(location);
+if (error) {
+  //handle error
+  return;
+}
+// Can directly use access_token from hash params to get user info
+
+const user = await client.account.getUserInfo(access_token);
+```
+
 ### Get OAuth2 UserInfo
 
 _Interface_
