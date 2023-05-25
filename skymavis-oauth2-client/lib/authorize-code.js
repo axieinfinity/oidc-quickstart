@@ -12,9 +12,7 @@ import { getCodeChallenge, getWebCrypto } from "./helpers";
 export class AuthorizationCode {
     constructor(client) {
         this.client = client;
-    }
-    getAuthorizeUri(params) {
-        return __awaiter(this, void 0, void 0, function* () {
+        this.getAuthorizeUri = (params) => __awaiter(this, void 0, void 0, function* () {
             const webCrypto = getWebCrypto();
             const query = {
                 client_id: this.client.settings.clientId,
@@ -35,10 +33,8 @@ export class AuthorizationCode {
             }
             return `${this.client.getEndpoint("authorizationEndpoint")}?${generateQueryString(query)}`;
         });
-    }
-    getToken(params) {
-        var _a, _b;
-        return __awaiter(this, void 0, void 0, function* () {
+        this.getToken = (params) => __awaiter(this, void 0, void 0, function* () {
+            var _a, _b;
             const headers = {
                 "Content-Type": "application/x-www-form-urlencoded",
                 "X-API-KEY": params.apiKey,

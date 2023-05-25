@@ -10,10 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 export class OAuth2Account {
     constructor(client) {
         this.client = client;
-    }
-    getUserInfo(params) {
-        var _a, _b;
-        return __awaiter(this, void 0, void 0, function* () {
+        this.getUserInfo = (params) => __awaiter(this, void 0, void 0, function* () {
+            var _a, _b;
             const resp = yield ((_b = (_a = this.client.settings).fetch) === null || _b === void 0 ? void 0 : _b.call(_a, this.client.getEndpoint("userinfo"), {
                 method: "GET",
                 headers: {

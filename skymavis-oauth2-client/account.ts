@@ -3,10 +3,10 @@ import { SkyMavisOAuth2Client } from "./client";
 export class OAuth2Account {
   constructor(private readonly client: SkyMavisOAuth2Client) {}
 
-  async getUserInfo(params: {
+  getUserInfo = async (params: {
     accessToken: string;
     apiKey: string;
-  }): Promise<UserResponse> {
+  }): Promise<UserResponse> => {
     const resp = await this.client.settings.fetch?.(
       this.client.getEndpoint("userinfo"),
       {
@@ -21,7 +21,7 @@ export class OAuth2Account {
       return await resp.json();
     }
     throw await this.client.handleErrorResponse(resp!);
-  }
+  };
 }
 export type UserResponse = {
   addr: string;

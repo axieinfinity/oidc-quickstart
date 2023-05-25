@@ -70,3 +70,14 @@ a {
     color-scheme: dark;
   }
 }
+button {
+  width: 240px;
+  color: #000;
+  padding: 12px 8px;
+  border-radius: 8px;
+  background: #e9f5fe;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 8px;
+}

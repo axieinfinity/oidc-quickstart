@@ -18,8 +18,15 @@ const Callback = () => {
   };
 
   const verifyOAuth2Callback = async () => {
+    const { code, access_token } = extractQueryParams(location.href);
+    //Handle implicit flow
+    if (access_token) {
+      setToken(access_token);
+      return getUserInfo(access_token);
+    }
+
+    //Handle authorization code
     const codeVerifier = localStorage.getItem("codeVerifier");
-    const { code } = extractQueryParams(location.href);
     if (code) {
       const resp = await fetch("http://localhost:3000/api/oauth2/token", {
         method: "POST",

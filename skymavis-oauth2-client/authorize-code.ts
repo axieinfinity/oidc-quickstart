@@ -4,7 +4,7 @@ import { getCodeChallenge, getWebCrypto } from "./helpers";
 export class AuthorizationCode {
   constructor(private readonly client: SkyMavisOAuth2Client) {}
 
-  async getAuthorizeUri(params: GetAuthorizeUriParams): Promise<string> {
+  getAuthorizeUri = async (params: GetAuthorizeUriParams): Promise<string> => {
     const webCrypto = getWebCrypto();
 
     const query: AuthorizationQueryParams = {
@@ -32,9 +32,9 @@ export class AuthorizationCode {
     return `${this.client.getEndpoint(
       "authorizationEndpoint"
     )}?${generateQueryString(query)}`;
-  }
+  };
 
-  async getToken(params: GetTokenParams): Promise<TokenResponse> {
+  getToken = async (params: GetTokenParams): Promise<TokenResponse> => {
     const headers: Record<string, string> = {
       "Content-Type": "application/x-www-form-urlencoded",
       "X-API-KEY": params.apiKey,
@@ -76,7 +76,7 @@ export class AuthorizationCode {
     }
 
     throw await this.client.handleErrorResponse(resp);
-  }
+  };
 }
 
 export type GetAuthorizeUriParams = {

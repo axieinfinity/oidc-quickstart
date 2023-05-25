@@ -69,9 +69,17 @@ function base64Url(buf: ArrayBuffer) {
 }
 
 export const extractQueryParams = (url: string): Record<string, any> => {
-  const searchParams = new URL(url).searchParams;
+  const { searchParams, hash } = new URL(url);
+
   let entries: [string, string][] = [];
+
   for (let pair of searchParams.entries()) {
+    entries.push(pair);
+  }
+
+  for (let pair of new URLSearchParams(
+    (hash || "").replace(/^#/, "")
+  ).entries()) {
     entries.push(pair);
   }
   return Object.fromEntries(entries);

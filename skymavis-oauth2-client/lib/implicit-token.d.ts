@@ -13,5 +13,5 @@ export type ImplicitQueryParams = {
 export declare class ImplicitToken {
     private readonly client;
     constructor(client: SkyMavisOAuth2Client);
-    getImplicitUri(params: GetImplicitParams): Promise<string>;
+    getImplicitTokenUri: (params: GetImplicitParams) => Promise<string>;
 }

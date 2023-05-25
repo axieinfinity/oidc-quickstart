@@ -115,6 +115,34 @@ const oauth2Token: TokenResponse = await client.authorizationCode.getToken(
 );
 ```
 
+### Implicit Flow
+
+Implicit Flow is a simplified authentication flow used in OAuth 2.0 and OpenID Connect protocols.
+The Implicit Flow allows these applications to obtain access tokens and identity information directly from the authorization server, without involving a backend server or using client secrets.
+
+_Interface_
+
+```ts
+export type GetImplicitParams = {
+  redirectUri: string;
+  state?: string;
+  nonce?: string;
+  scope?: string[];
+};
+```
+
+```ts
+const url = await client.implicitToken.getImplicitTokenUri({
+  redirectUri: "https://my-app.example/oauth2/callback",
+  nonce: "some-thing",
+});
+location.href = url;
+```
+
+** ⚠️⚠️⚠️ It's important to note that the Implicit Flow does not involve a separate token endpoint for token exchange, unlike other flows such as Authorization Code Flow with PKCE (Proof Key for Code Exchange).
+The access token is directly included in the response from the authorization server,
+making it accessible to the client-side JavaScript code.**
+
 ### Get OAuth2 UserInfo
 
 _Interface_

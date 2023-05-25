@@ -74,9 +74,12 @@ function base64Url(buf) {
         .replace(/=+$/, "");
 }
 export const extractQueryParams = (url) => {
-    const searchParams = new URL(url).searchParams;
+    const { searchParams, hash } = new URL(url);
     let entries = [];
     for (let pair of searchParams.entries()) {
+        entries.push(pair);
+    }
+    for (let pair of new URLSearchParams((hash || "").replace(/^#/, "")).entries()) {
         entries.push(pair);
     }
     return Object.fromEntries(entries);

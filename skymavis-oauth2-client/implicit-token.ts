@@ -17,7 +17,7 @@ export type ImplicitQueryParams = {
 export class ImplicitToken {
   constructor(private readonly client: SkyMavisOAuth2Client) {}
 
-  async getImplicitUri(params: GetImplicitParams): Promise<string> {
+  getImplicitTokenUri = async (params: GetImplicitParams): Promise<string> => {
     const webCrypto = getWebCrypto();
     const query: ImplicitQueryParams = {
       client_id: this.client.settings.clientId,
@@ -34,11 +34,11 @@ export class ImplicitToken {
       query.scope = params.scope.join(" ");
     }
     if (params.nonce) {
-      query.scope = params.nonce;
+      query.nonce = params.nonce;
     }
 
     return `${this.client.getEndpoint(
       "authorizationEndpoint"
     )}?${generateQueryString(query)}`;
-  }
+  };
 }

@@ -2,10 +2,10 @@ import { SkyMavisOAuth2Client } from "./client";
 export declare class OAuth2Account {
     private readonly client;
     constructor(client: SkyMavisOAuth2Client);
-    getUserInfo(params: {
+    getUserInfo: (params: {
         accessToken: string;
         apiKey: string;
-    }): Promise<UserResponse>;
+    }) => Promise<UserResponse>;
 }
 export type UserResponse = {
     addr: string;

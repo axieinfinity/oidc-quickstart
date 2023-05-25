@@ -2,8 +2,8 @@ import { SkyMavisOAuth2Client } from "./client";
 export declare class AuthorizationCode {
     private readonly client;
     constructor(client: SkyMavisOAuth2Client);
-    getAuthorizeUri(params: GetAuthorizeUriParams): Promise<string>;
-    getToken(params: GetTokenParams): Promise<TokenResponse>;
+    getAuthorizeUri: (params: GetAuthorizeUriParams) => Promise<string>;
+    getToken: (params: GetTokenParams) => Promise<TokenResponse>;
 }
 export type GetAuthorizeUriParams = {
     redirectUri: string;

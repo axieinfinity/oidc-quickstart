@@ -16,12 +16,20 @@ export default function Home() {
     location.href = url;
   };
 
-  useEffect(() => {
-    requestAuthrizationCode();
-  }, []);
+  const requestImplicitToken = async () => {
+    const url = await client.implicitToken.getImplicitTokenUri({
+      redirectUri: "http://localhost:3000/oauth2/callback",
+    });
+    location.href = url;
+  };
+
   return (
-    <main className={styles.main}>
-      <p>Redirect to Skymavis OAuth2 Server</p>
+    <main>
+      <div style={{ margin: "auto", width: 680, marginTop: 200 }}>
+        <h2 style={{ marginBottom: 24 }}>Redirect to Skymavis OAuth2 Server</h2>
+        <button onClick={requestAuthrizationCode}>Authorization Code</button>
+        <button onClick={requestImplicitToken}>Implicit Token</button>
+      </div>
     </main>
   );
 }
