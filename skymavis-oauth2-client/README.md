@@ -139,9 +139,9 @@ const url = await client.implicitToken.getImplicitTokenUri({
 location.href = url;
 ```
 
-** ⚠️⚠️⚠️ It's important to note that the Implicit Flow does not involve a separate token endpoint for token exchange, unlike other flows such as Authorization Code Flow with PKCE (Proof Key for Code Exchange).
+⚠️⚠️⚠️ It's important to note that the Implicit Flow does not involve a separate token endpoint for token exchange, unlike other flows such as Authorization Code Flow with PKCE (Proof Key for Code Exchange).
 The access token is directly included in the response from the authorization server,
-making it accessible to the client-side JavaScript code.**
+making it accessible to the client-side JavaScript code.
 
 ### Get OAuth2 UserInfo
 
