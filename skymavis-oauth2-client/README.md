@@ -120,6 +120,8 @@ const oauth2Token: TokenResponse = await client.authorizationCode.getToken(
 Implicit Flow is a simplified authentication flow used in OAuth 2.0 and OpenID Connect protocols.
 The Implicit Flow allows these applications to obtain access tokens and identity information directly from the authorization server, without involving a backend server or using client secrets.
 
+To order to use Implicit Flow, you need to enable `grant_type=implement` in your OAuth2.0 setting on [SkyMavis Devloper Portal](https://developers.skymavis.com/console/account-service/)
+
 _Interface_
 
 ```ts
