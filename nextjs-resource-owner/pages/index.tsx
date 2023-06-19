@@ -68,6 +68,10 @@ export default function Home() {
       const { token } = await resp.json()
 
       setToken(token)
+      setMFAData(prev=>({
+        ...prev,
+        open: false,
+      }))
 
       notify.info({
         message: 'Login successful!',

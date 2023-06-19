@@ -1,6 +1,6 @@
 import { Form, Input, Modal, ModalProps } from 'antd'
 import type { FC } from 'react'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 
 const MFAModeConfigs = {
   otp: {
@@ -45,13 +45,6 @@ const MFAModal: FC<MFAModalProps> = props => {
     },
     [isLoading, mode, onSubmit],
   )
-
-  useEffect(() => {
-    const code = form.getFieldValue('code')
-    if (code?.length === MFAModeConfigs[mode].maxLength) {
-      form.submit()
-    }
-  }, [mode])
 
   return (
     <Modal
