@@ -11,10 +11,10 @@
  * - invalid_scope
  */
 export class OAuth2Error extends Error {
-    constructor(error, errorDescription, status) {
-        super(errorDescription);
-        this.error = error;
-        this.error_description = errorDescription;
-        this.http_status = status;
-    }
+  constructor(error, errorDescription, status) {
+    super(errorDescription)
+    this.error = error
+    this.error_description = errorDescription
+    this.http_status = status
+  }
 }

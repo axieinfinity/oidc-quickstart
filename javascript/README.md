@@ -23,8 +23,8 @@ Change working directory to `authenticate-server`:
 
 ```javascript
 const client = new SkyMavisOAuth2Client({
-  clientId: "your_client_id",
-});
+  clientId: 'your_client_id',
+})
 ```
 
 3. Run: `npm run start`
