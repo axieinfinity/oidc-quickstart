@@ -1,10 +1,9 @@
-require('dotenv').config()
+require('dotenv').config({ path: '../../.env' })
 import 'isomorphic-fetch'
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { client, extractQueryParams, generateCodeVerifier } from './client'
 
 function createWindow(): void {
   // Create the browser window.
@@ -16,15 +15,15 @@ function createWindow(): void {
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
-    }
+      sandbox: false,
+    },
   })
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
 
-  mainWindow.webContents.setWindowOpenHandler((details) => {
+  mainWindow.webContents.setWindowOpenHandler(details => {
     shell.openExternal(details.url)
     return { action: 'deny' }
   })
@@ -73,42 +72,43 @@ app.on('window-all-closed', () => {
 
 let codeResolve: (query: Record<string, string>) => void
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const codePromise = new Promise<Record<string, string>>((resolve) => (codeResolve = resolve))
+const codePromise = new Promise<Record<string, string>>(
+  resolve => (codeResolve = resolve),
+)
 
-app.on('open-url', (_event, url) => {
-  if (url.startsWith('foo://callback')) {
-    const query = extractQueryParams(url)
-    if (query.code) {
-      codeResolve(query)
-    }
-  }
-})
+// app.on('open-url', (_event, url) => {
+//   if (url.startsWith('foo://callback')) {
+//     const query = extractQueryParams(url)
+//     if (query.code) {
+//       codeResolve(query)
+//     }
+//   }
+// })
 
-ipcMain.handle('request_login', async (_, args) => {
-  const codeVerifier = await generateCodeVerifier()
-  const uri = await client.authorizationCode.getAuthorizeUri({
-    redirectUri: 'foo://callback',
-    codeVerifier
-  })
-  shell.openExternal(uri)
-  const { code } = await codePromise
+// ipcMain.handle('request_login', async (_, args) => {
+//   const codeVerifier = await generateCodeVerifier()
+//   const uri = await client.authorizationCode.getAuthorizeUri({
+//     redirectUri: 'foo://callback',
+//     codeVerifier,
+//   })
+//   shell.openExternal(uri)
+//   const { code } = await codePromise
 
-  const tokenResponse = await fetch('http://localhost:8080/oauth2/token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      code,
-      codeVerifier
-    })
-  }).then((res) => res.json())
+//   const tokenResponse = await fetch('http://localhost:8080/oauth2/token', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({
+//       code,
+//       codeVerifier,
+//     }),
+//   }).then(res => res.json())
 
-  console.log('token', tokenResponse)
+//   console.log('token', tokenResponse)
 
-  tokenResponse
-})
+//   tokenResponse
+// })
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
