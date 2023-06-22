@@ -7,7 +7,7 @@ import {
 } from '../../../skymavis-oauth2-client/lib'
 
 const settings: ClientSettings = {
-  clientId: process.env.NEXT_PUBLIC_CLIENT_ID as string,
+  clientId: process.env.CLIENT_ID as string,
 }
 export const client = new SkyMavisOAuth2Client(settings)
 
