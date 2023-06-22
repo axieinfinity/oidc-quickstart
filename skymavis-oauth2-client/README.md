@@ -18,22 +18,22 @@ Sky Mavis OAuth2 Client expose methods implement the SSO Flow.
 Instantiate the SkyMavisOAuth2Client:
 
 ```ts
-export type Scope = "openid" | "offline";
+export type Scope = 'openid' | 'offline'
 export type ClientSettings = {
-  clientId: string;
-  clientSecret?: string;
+  clientId: string
+  clientSecret?: string
 
   //[default = 'https://api-gateway.skymavis.com']
-  server?: string;
+  server?: string
   //[default = '/oauth2/oauth']
-  authorizationEndpoint?: string;
+  authorizationEndpoint?: string
   //[default = '/account/oauth2/token']
-  tokenEndpoint?: string;
-};
+  tokenEndpoint?: string
+}
 
 const client: ClientSettings = {
-  clientId: "your_client_id",
-};
+  clientId: 'your_client_id',
+}
 ```
 
 ### Authorization Code Flow
@@ -55,22 +55,22 @@ This library provides support for these steps, but there's no requirement
 to use its functionality as the system is mostly stateless.
 
 ```ts
-
 export type GetAuthorizeUriParams = {
-  redirectUri: string;
-  state?: string;
-  codeVerifier?: string;
-  scope?: string[];
-};
+  redirectUri: string
+  state?: string
+  codeVerifier?: string
+  scope?: string[]
+}
 
-const getAuthorizeParams={
-  redirectUri: "https://my-app.example/oauth2/callback",
-  state: "some-string",
-} satisfies GetAuthorizeUriParams;
+const getAuthorizeParams = {
+  redirectUri: 'https://my-app.example/oauth2/callback',
+  state: 'some-string',
+} satisfies GetAuthorizeUriParams
 
 // Redirect to SSO Server
-document.location = await client.authorizationCode.getAuthorizeUri(getAuthorizaParams);
-
+document.location = await client.authorizationCode.getAuthorizeUri(
+  getAuthorizaParams,
+)
 ```
 
 #### 2. Handle authorization callback and exchange token:
@@ -78,41 +78,41 @@ document.location = await client.authorizationCode.getAuthorizeUri(getAuthorizaP
 _Interface_
 
 ```ts
-export type AuthenticateMethod = "client_secret_basic" | "client_secret_post";
+export type AuthenticateMethod = 'client_secret_basic' | 'client_secret_post'
 
 export type GetTokenParams = {
-  code: string;
-  apiKey: string;
-  redirectUri: string;
-  clientSecret: string;
-  authorizeMethod?: AuthenticateMethod;
-  codeVerifier?: string;
-};
+  code: string
+  apiKey: string
+  redirectUri: string
+  clientSecret: string
+  authorizeMethod?: AuthenticateMethod
+  codeVerifier?: string
+}
 
 export type TokenResponse = {
-  access_token: string;
-  expires_in: number;
-  scope: string;
-  token_type: string;
-};
+  access_token: string
+  expires_in: number
+  scope: string
+  token_type: string
+}
 ```
 
 ```ts
-import { extractQueryParams, GetTokenParams } from "oauth2-client";
+import { extractQueryParams, GetTokenParams } from 'oauth2-client'
 
-const { code, state } = extractQueryParams(String(document.location));
+const { code, state } = extractQueryParams(String(document.location))
 
 const getTokenParams: GetTokenParams = {
-  redirectUri: "https://my-app.example/",
-  code: "authorize code",
-  clientSecret: "client secret",
-  codeVerifier: "codeVerifier",
-  apiKey: "API_KEY",
-};
+  redirectUri: 'https://my-app.example/',
+  code: 'authorize code',
+  clientSecret: 'client secret',
+  codeVerifier: 'codeVerifier',
+  apiKey: 'API_KEY',
+}
 // Exchange token
 const oauth2Token: TokenResponse = await client.authorizationCode.getToken(
-  getTokenParams
-);
+  getTokenParams,
+)
 ```
 
 ### Get OAuth2 UserInfo
@@ -121,20 +121,20 @@ _Interface_
 
 ```ts
 export type UserResponse = {
-  addr: string;
-  aud: string[];
-  auth_time: number;
-  email: string;
-  iat: number;
-  iss: string;
-  name: string;
-  rat: number;
-  redirect_uri: string;
-  roninAddress: string;
-  status: string;
-  sub: string;
-  walletConnect?: string;
-};
+  addr: string
+  aud: string[]
+  auth_time: number
+  email: string
+  iat: number
+  iss: string
+  name: string
+  rat: number
+  redirect_uri: string
+  roninAddress: string
+  status: string
+  sub: string
+  walletConnect?: string
+}
 ```
 
 ```ts
@@ -142,5 +142,5 @@ const resp: OAuthUser = await client.account.getUserInfo({
   apiKey: process.env.API_KEY as string,
   // access_token archive from client.authorizationCode.getToken(...)
   accessToken,
-});
+})
 ```

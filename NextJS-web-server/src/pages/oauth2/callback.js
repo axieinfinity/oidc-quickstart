@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
 export default function Callback() {
-  const router = useRouter();
+  const router = useRouter()
 
   useEffect(() => {
     if (router.query.code) {
@@ -12,28 +12,31 @@ export default function Callback() {
       try {
         fetch('/api/oauth2/token', {
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
           method: 'POST',
           body: JSON.stringify({
             code: router.query.code,
-            codeVerifier: codeVerifier
+            codeVerifier: codeVerifier,
+          }),
+        })
+          .then(res => res.json())
+          .then(resData => {
+            router.push(
+              `${process.env.DEEPLINK_URL}?access_token=${resData.access_token}&id_token=${resData.id_token}&refresh_token=${resData.refresh_token}`,
+            )
           })
-        })
-        .then((res) => res.json())
-        .then((resData) => {
-          router.push(`${process.env.DEEPLINK_URL}?access_token=${resData.access_token}&id_token=${resData.id_token}&refresh_token=${resData.refresh_token}`)
-        })
-      }
-      catch (ex) {
+      } catch (ex) {
         // Handle exception
       }
     }
-  }, [router]);
+  }, [router])
 
   return (
     <div>
-      <div className="loader center"><span></span></div>
+      <div className="loader center">
+        <span></span>
+      </div>
     </div>
   )
 }
