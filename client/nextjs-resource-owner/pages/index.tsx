@@ -5,7 +5,8 @@ import { SHA256 } from 'crypto-js'
 import { CaptchaLoadFailError, useBindCaptcha } from '@axieinfinity/captcha'
 import MFAModal, { MFAMode } from './_MFAModal'
 
-const GEETEST_ENDPOINT = process.env.NEXT_PUBLIC_GEETEST_ENDPOINT
+const GEETEST_ENDPOINT = process.env.GEETEST_ENDPOINT
+const SERVER_ENDPOINT = process.env.SERVER_ENDPOINT ?? 'http://localhost:8080'
 
 const { Title } = Typography
 
@@ -111,7 +112,7 @@ export default function Home() {
 
       const { email, password } = values
 
-      const resp = await fetch('/api/login', {
+      const resp = await fetch(`${SERVER_ENDPOINT}/oauth2/ropc/token`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

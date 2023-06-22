@@ -2,7 +2,7 @@ import { generateQueryString } from '@/utils'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 const API_KEY = process.env.API_KEY ?? ''
-const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID ?? ''
+const CLIENT_ID = process.env.CLIENT_ID ?? ''
 const CLIENT_SECRET = process.env.CLIENT_SECRET ?? ''
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
