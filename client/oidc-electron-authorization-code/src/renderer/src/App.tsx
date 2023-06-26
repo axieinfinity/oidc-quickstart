@@ -5,7 +5,9 @@ function App(): JSX.Element {
 
   const requestLogin = async (): Promise<void> => {
     setAuthenticating(true)
+
     const resp = await window.electron.ipcRenderer.invoke('request_login', 1)
+
     setAuthenticating(false)
   }
   return (

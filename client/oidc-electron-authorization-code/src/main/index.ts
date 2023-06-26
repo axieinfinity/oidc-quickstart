@@ -1,9 +1,31 @@
 require('dotenv').config({ path: '../../.env' })
 import 'isomorphic-fetch'
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
-import { join } from 'path'
+import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+import crypto from 'crypto'
+import axios from 'axios'
+
+const SERVER_ENDPOINT = process.env.SERVER_ENDPOINT ?? 'http://localhost:8080'
+const CALLBACK_DEEPLINK =
+  process.env.CALLBACK_DEEPLINK ?? 'mavis-sso://oauth2/callback'
+const SSO_ENDPOINT =
+  process.env.SSO_ENDPOINT || 'https://api-gateway.skymavis.one'
+const CLIENT_ID = process.env.CLIENT_ID ?? ''
+
+const gotTheLock = app.requestSingleInstanceLock()
+
+if (process.defaultApp) {
+  if (process.argv.length >= 2) {
+    app.setAsDefaultProtocolClient('mavis-sso', process.execPath, [
+      path.resolve(process.argv[1]),
+    ])
+  }
+} else {
+  app.setAsDefaultProtocolClient('mavis-sso')
+}
+
+let mainWindow
 
 function createWindow(): void {
   // Create the browser window.
@@ -12,7 +34,6 @@ function createWindow(): void {
     height: 670,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
@@ -70,45 +91,79 @@ app.on('window-all-closed', () => {
   }
 })
 
-let codeResolve: (query: Record<string, string>) => void
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', (_, commandLine) => {
+    // Someone tried to run a second instance, we should focus our window.
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.focus()
+    }
+    // the commandLine is array of strings in which last element is deep link url
+    // the url str ends with /
+    const url = commandLine?.pop()?.slice(0, -1) ?? ''
+    if (url.startsWith(CALLBACK_DEEPLINK)) {
+      urlResolve(url)
+    }
+  })
+}
 
-const codePromise = new Promise<Record<string, string>>(
-  resolve => (codeResolve = resolve),
-)
+let urlResolve: (query: string) => void
 
-// app.on('open-url', (_event, url) => {
-//   if (url.startsWith('foo://callback')) {
-//     const query = extractQueryParams(url)
-//     if (query.code) {
-//       codeResolve(query)
-//     }
-//   }
-// })
+const urlPromise = new Promise<string>(resolve => (urlResolve = resolve))
 
-// ipcMain.handle('request_login', async (_, args) => {
-//   const codeVerifier = await generateCodeVerifier()
-//   const uri = await client.authorizationCode.getAuthorizeUri({
-//     redirectUri: 'foo://callback',
-//     codeVerifier,
-//   })
-//   shell.openExternal(uri)
-//   const { code } = await codePromise
+app.on('open-url', (_, url) => {
+  if (url.startsWith(CALLBACK_DEEPLINK)) {
+    urlResolve(url)
+  }
+})
 
-//   const tokenResponse = await fetch('http://localhost:8080/oauth2/token', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify({
-//       code,
-//       codeVerifier,
-//     }),
-//   }).then(res => res.json())
+ipcMain.handle('request_login', async () => {
+  const query = new URLSearchParams({
+    state: crypto.randomUUID(),
+    client_id: CLIENT_ID,
+    response_type: 'code',
+    scopes: 'openid',
+    remember: 'false',
+    redirect_uri: CALLBACK_DEEPLINK,
+  })
 
-//   console.log('token', tokenResponse)
+  shell.openExternal(`${SSO_ENDPOINT}/oauth2/auth?${query.toString()}`)
 
-//   tokenResponse
-// })
+  try {
+    const callbackUrl = await urlPromise
+    const code = new URL(callbackUrl).searchParams.get('code')
+
+    if (!code) {
+      return null
+    }
+
+    const { data } = await axios({
+      baseURL: SERVER_ENDPOINT,
+      url: '/oauth2/authorization-code/token',
+      method: 'POST',
+      data: {
+        code,
+        grant_type: 'code',
+        scope: 'openid offline',
+      },
+    })
+
+    return {
+      token: data,
+    }
+    // const tokenResponse = await fetch(`${SERVER_ENDPOINT}/oauth2/token`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     code,
+    //   }),
+    // }).then(res => res.json())
+  } catch (error) {}
+})
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
