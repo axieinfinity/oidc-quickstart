@@ -4,6 +4,7 @@ import { Typography } from 'antd'
 import { SHA256 } from 'crypto-js'
 import { CaptchaLoadFailError, useBindCaptcha } from '@axieinfinity/captcha'
 import MFAModal, { MFAMode } from './_MFAModal'
+import axios, { AxiosError, isAxiosError } from 'axios'
 
 const GEETEST_ENDPOINT = process.env.GEETEST_ENDPOINT
 const SERVER_ENDPOINT = process.env.SERVER_ENDPOINT ?? 'http://localhost:8080'
@@ -33,43 +34,21 @@ export default function Home() {
 
       setMFALoading(true)
 
-      const resp = await fetch('/api/mfa', {
+      const { data } = await axios({
+        baseURL: SERVER_ENDPOINT,
+        url: '/oauth2/ropc/mfa',
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+        data: {
           code,
           MFAtoken: MFAData.token,
-        }),
+        },
       })
 
-      if (!resp.ok) {
-        const { error, error_description, mfa_token } = await resp
-          .clone()
-          .json()
+      setMFALoading(false)
 
-        if (resp.status === 403 && error === 'mfa_required') {
-          setMFAData({
-            open: true,
-            token: mfa_token,
-          })
-          return
-        }
+      setToken(data.token)
 
-        setMFALoading(false)
-
-        notify.error({
-          message: error,
-          description: error_description,
-        })
-        return
-      }
-
-      const { token } = await resp.json()
-
-      setToken(token)
-      setMFAData(prev=>({
+      setMFAData(prev => ({
         ...prev,
         open: false,
       }))
@@ -77,9 +56,22 @@ export default function Home() {
       notify.info({
         message: 'Login successful!',
       })
-    } catch {
-      setMFALoading(false)
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const axiosError = error as AxiosError<{
+          error: string
+          error_description: string
+        }>
+        const errorData = axiosError.response?.data
+
+        notify.error({
+          message: errorData?.error,
+          description: errorData?.error_description,
+        })
+      }
     }
+
+    setMFALoading(false)
   }
 
   const onSubmitEmailPassword = async (values: {
@@ -112,48 +104,48 @@ export default function Home() {
 
       const { email, password } = values
 
-      const resp = await fetch(`${SERVER_ENDPOINT}/oauth2/ropc/token`, {
+      const { data } = await axios({
+        baseURL: SERVER_ENDPOINT,
+        url: '/oauth2/ropc/token',
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+        data: {
           captcha,
           email,
           password: SHA256(password).toString(),
-        }),
+        },
       })
 
-      if (!resp.ok) {
-        const { error, error_description, mfa_token } = await resp
-          .clone()
-          .json()
+      setLoginLoading(false)
 
-        if (resp.status === 403 && error === 'mfa_required') {
-          setMFAData({
-            open: true,
-            token: mfa_token,
-          })
-          return
-        }
-
-        setLoginLoading(false)
-
-        notify.error({
-          message: error,
-          description: error_description,
-        })
-        return
-      }
-
-      const { token } = await resp.json()
-
-      setToken(token)
+      setToken(data.token)
 
       notify.info({
         message: 'Login successful!',
       })
-    } catch {
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const axiosError = error as AxiosError<{
+          error: string
+          error_description: string
+          mfa_token: string
+        }>
+        const errorStatus = axiosError.response?.status
+        const errorData = axiosError.response?.data
+
+        if (errorStatus === 403 && errorData?.error === 'mfa_required') {
+          setMFAData({
+            open: true,
+            token: errorData?.mfa_token,
+          })
+          return
+        }
+
+        notify.error({
+          message: errorData?.error,
+          description: errorData?.error_description,
+        })
+      }
+
       setLoginLoading(false)
     }
   }

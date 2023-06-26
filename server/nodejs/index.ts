@@ -84,6 +84,50 @@ app.post(
 )
 
 app.post(
+  '/oauth2/ropc/mfa',
+  async (
+    req: FastifyRequest<{
+      Body: { code: string; MFAtoken: string }
+    }>,
+    res,
+  ) => {
+    const { code, MFAtoken } = req.body
+
+    try {
+      const { data } = await axios({
+        baseURL: SSO_ENDPOINT,
+        url: 'account/oauth2/token',
+        method: 'POST',
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded',
+          'x-api-key': API_KEY,
+        },
+        data: {
+          grant_type: 'mfa-otp',
+          otp: code,
+          mfa_token: MFAtoken,
+          client_id: CLIENT_ID,
+          client_secret: CLIENT_SECRET,
+        },
+      })
+
+      return {
+        token: data,
+      }
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        const errorStatus = axiosError.response?.status
+        const errorData = axiosError.response?.data
+        return res.status(errorStatus ?? 400).send(errorData)
+      }
+
+      return res.status(400).send('Something went wrong.')
+    }
+  },
+)
+
+app.post(
   '/oauth2/authorization-code/token',
   async (
     req: FastifyRequest<{
