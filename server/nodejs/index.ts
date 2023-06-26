@@ -9,12 +9,21 @@ type GeetestCaptcha = {
   geetest_seccode: string
 }
 
+type AuthorizationMethod = 'client_secret_basic' | 'client_secret_post'
+
+type TAuthorizationCode = {
+  code: string
+  redirect_url: string
+  code_verifier?: string
+  authorization_method?: AuthorizationMethod
+}
+
 const PORT = Number(process.env.SERVER_PORT) || 8080
 const SSO_ENDPOINT =
   process.env.SSO_ENDPOINT || 'https://api-gateway.skymavis.one'
-const CLIENT_ID = process.env.CLIENT_ID
-const API_KEY = process.env.API_KEY
-const CLIENT_SECRET = process.env.CLIENT_SECRET
+const CLIENT_ID = process.env.CLIENT_ID || ''
+const API_KEY = process.env.API_KEY || ''
+const CLIENT_SECRET = process.env.CLIENT_SECRET || ''
 
 const app = Fastify()
 
@@ -74,43 +83,95 @@ app.post(
   },
 )
 
-// app.post(
-//   '/oauth2/authorization-code/token',
-//   async (request: FastifyRequest<{ Body: ClientCredentials }>, reply) => {
-//     try {
-//       const body = request.body || {}
+app.post(
+  '/oauth2/authorization-code/token',
+  async (
+    req: FastifyRequest<{
+      Body: TAuthorizationCode
+    }>,
+    res,
+  ) => {
+    const { code, code_verifier, redirect_url, authorization_method } = req.body
 
-//       if (!body.code) {
-//         throw new Error('Missing code')
-//       }
+    const headers: Record<string, string> = {
+      'content-type': 'application/x-www-form-urlencoded',
+      'x-api-key': API_KEY,
+    }
 
-//       body.redirectUri ||= process.env.CALLBACK_URL
+    const body: Record<string, string> = {
+      grant_type: 'authorization_code',
+      code: code,
+      redirect_uri: redirect_url,
+    }
 
-//       const params = {
-//         ...body,
-//         clientSecret: process.env.CLIENT_SECRET,
-//         apiKey: process.env.API_KEY,
-//       } as GetTokenParams
+    if (code_verifier) {
+      body.code_verifier = code_verifier
+    }
 
-//       return client.authorizationCode.getToken(params)
-//     } catch (error) {
-//       console.error(error)
-//     }
-//   },
-// )
+    if (authorization_method === 'client_secret_basic') {
+      headers.Authorization = `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`
+      body.token_endpoint_auth_method = 'client_secret_basic'
+    } else {
+      body.client_id = CLIENT_ID
+      body.client_secret = CLIENT_SECRET
+      body.token_endpoint_auth_method = 'client_secret_post'
+    }
 
-// app.get('/oauth2/userinfo', async (request, reply) => {
-//   try {
-//     const accessToken = request.headers['authorization'] as string
-//     const user = await client.account.getUserInfo({
-//       accessToken,
-//       apiKey: process.env.API_KEY as string,
-//     })
-//     return user
-//   } catch (error) {
-//     console.error(error)
-//   }
-// })
+    try {
+      const { data } = await axios({
+        baseURL: SSO_ENDPOINT,
+        url: `account/oauth2/token`,
+        method: 'POST',
+        headers,
+        data: body,
+      })
+
+      return {
+        data,
+      }
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        const errorStatus = axiosError.response?.status
+        const errorData = axiosError.response?.data
+        return res.status(errorStatus ?? 400).send(errorData)
+      }
+
+      return res.status(400).send('Something went wrong.')
+    }
+  },
+)
+
+app.get('/oauth2/userinfo', async (req, res) => {
+  const accessToken = req.headers['authorization']
+
+  const headers: Record<string, string> = {
+    'content-type': 'application/x-www-form-urlencoded',
+    'x-api-key': API_KEY,
+    authorization: `Bearer ${accessToken}`,
+  }
+  try {
+    const { data } = await axios({
+      baseURL: SSO_ENDPOINT,
+      url: `account/userinfo`,
+      method: 'GET',
+      headers,
+    })
+
+    return {
+      data,
+    }
+  } catch (error) {
+    if (isAxiosError(error)) {
+      const axiosError = error as AxiosError
+      const errorStatus = axiosError.response?.status
+      const errorData = axiosError.response?.data
+      return res.status(errorStatus ?? 400).send(errorData)
+    }
+
+    return res.status(400).send('Something went wrong.')
+  }
+})
 
 const run = async () => {
   process.on('unhandledRejection', err => {
