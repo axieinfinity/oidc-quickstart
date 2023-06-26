@@ -1,8 +1,8 @@
 appId: com.electron.app
 protocols:
-  - name: Foo Custom Protocol
+  - name: mavis-sso Custom Protocol
     schemes:
-      - foo
+      - mavis-sso
 productName: electron-app
 directories:
   buildResources: build

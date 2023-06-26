@@ -11,7 +11,7 @@ type GeetestCaptcha = {
 
 type AuthorizationMethod = 'client_secret_basic' | 'client_secret_post'
 
-type TAuthorizationCode = {
+type AuthorizationCodeRequest = {
   code: string
   redirect_url: string
   code_verifier?: string
@@ -84,10 +84,54 @@ app.post(
 )
 
 app.post(
+  '/oauth2/ropc/mfa',
+  async (
+    req: FastifyRequest<{
+      Body: { code: string; MFAtoken: string }
+    }>,
+    res,
+  ) => {
+    const { code, MFAtoken } = req.body
+
+    try {
+      const { data } = await axios({
+        baseURL: SSO_ENDPOINT,
+        url: 'account/oauth2/token',
+        method: 'POST',
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded',
+          'x-api-key': API_KEY,
+        },
+        data: {
+          grant_type: 'mfa-otp',
+          otp: code,
+          mfa_token: MFAtoken,
+          client_id: CLIENT_ID,
+          client_secret: CLIENT_SECRET,
+        },
+      })
+
+      return {
+        token: data,
+      }
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        const errorStatus = axiosError.response?.status
+        const errorData = axiosError.response?.data
+        return res.status(errorStatus ?? 400).send(errorData)
+      }
+
+      return res.status(400).send('Something went wrong.')
+    }
+  },
+)
+
+app.post(
   '/oauth2/authorization-code/token',
   async (
     req: FastifyRequest<{
-      Body: TAuthorizationCode
+      Body: AuthorizationCodeRequest
     }>,
     res,
   ) => {
@@ -99,28 +143,29 @@ app.post(
     }
 
     const body: Record<string, string> = {
+      code,
       grant_type: 'authorization_code',
-      code: code,
       redirect_uri: redirect_url,
+    }
+
+    switch (authorization_method) {
+      case 'client_secret_basic':
+        headers.Authorization = `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`
+        headers.token_endpoint_auth_method = authorization_method
+        break
+      default:
+        body.client_id = CLIENT_ID
+        body.client_secret = CLIENT_SECRET
     }
 
     if (code_verifier) {
       body.code_verifier = code_verifier
     }
 
-    if (authorization_method === 'client_secret_basic') {
-      headers.Authorization = `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`
-      body.token_endpoint_auth_method = 'client_secret_basic'
-    } else {
-      body.client_id = CLIENT_ID
-      body.client_secret = CLIENT_SECRET
-      body.token_endpoint_auth_method = 'client_secret_post'
-    }
-
     try {
       const { data } = await axios({
         baseURL: SSO_ENDPOINT,
-        url: `account/oauth2/token`,
+        url: `/account/oauth2/token`,
         method: 'POST',
         headers,
         data: body,
