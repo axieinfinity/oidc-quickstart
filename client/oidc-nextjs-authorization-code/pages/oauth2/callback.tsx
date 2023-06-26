@@ -3,6 +3,8 @@ import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
 
 const SERVER_ENDPOINT = process.env.SERVER_ENDPOINT ?? 'http://localhost:8080'
+const CALLBACK_URL =
+  process.env.CALLBACK_URL ?? 'http://localhost:3000/oauth2/callback'
 
 const Callback = () => {
   const router = useRouter()
@@ -20,7 +22,7 @@ const Callback = () => {
         method: 'POST',
         data: {
           code,
-          redirect_uri: `${window.location.origin}/oauth2/callback`,
+          redirect_uri: CALLBACK_URL,
         },
       })
 
