@@ -29,9 +29,7 @@ const Callback = () => {
         body: JSON.stringify({ code, codeVerifier }),
       }).then(res => res.json())
       if (resp.success) {
-        console.log('token:before', token)
         setToken(resp.data.access_token)
-        console.log('token:after', token)
         getUserInfo(resp.data.access_token)
       }
     }

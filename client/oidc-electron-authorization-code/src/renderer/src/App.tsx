@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 function App(): JSX.Element {
-  const [token, setToken] = useState('')
+  const [token, setToken] = useState(null)
   const requestLogin = async (): Promise<void> => {
     const { token } = await window.electron.ipcRenderer.invoke(
       'request_login',
