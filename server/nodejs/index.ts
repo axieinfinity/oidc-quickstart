@@ -13,7 +13,7 @@ type AuthorizationMethod = 'client_secret_basic' | 'client_secret_post'
 
 type AuthorizationCodeRequest = {
   code: string
-  redirect_url: string
+  redirect_uri: string
   code_verifier?: string
   authorization_method?: AuthorizationMethod
 }
@@ -135,7 +135,7 @@ app.post(
     }>,
     res,
   ) => {
-    const { code, code_verifier, redirect_url, authorization_method } = req.body
+    const { code, code_verifier, redirect_uri, authorization_method } = req.body
 
     const headers: Record<string, string> = {
       'content-type': 'application/x-www-form-urlencoded',
@@ -144,8 +144,8 @@ app.post(
 
     const body: Record<string, string> = {
       code,
+      redirect_uri,
       grant_type: 'authorization_code',
-      redirect_uri: redirect_url,
     }
 
     switch (authorization_method) {
