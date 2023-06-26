@@ -1,14 +1,14 @@
 import { useState } from 'react'
 
 function App(): JSX.Element {
-  const [authenticating, setAuthenticating] = useState(false)
-
+  const [token, setToken] = useState('')
   const requestLogin = async (): Promise<void> => {
-    setAuthenticating(true)
+    const { token } = await window.electron.ipcRenderer.invoke(
+      'request_login',
+      1,
+    )
 
-    const resp = await window.electron.ipcRenderer.invoke('request_login', 1)
-
-    setAuthenticating(false)
+    if (token) setToken(token)
   }
   return (
     <div
@@ -17,21 +17,32 @@ function App(): JSX.Element {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: '200px',
+        marginTop: '100px',
       }}
     >
-      <h1>Login</h1>
-      <button
-        style={{
-          padding: '12px 32px',
-          borderRadius: 8,
-          border: 'none',
-          cursor: 'pointer',
-        }}
-        onClick={requestLogin}
-      >
-        {authenticating ? 'Logging in...' : 'Continue with Sky Mavis SSO'}
-      </button>
+      {token ? (
+        <>
+          <h1>Login successful!</h1>
+          <pre style={{ whiteSpace: 'pre-wrap', width: 600, overflow: 'auto' }}>
+            {JSON.stringify(token, null, 2)}
+          </pre>
+        </>
+      ) : (
+        <>
+          <h1>Login</h1>
+          <button
+            style={{
+              padding: '12px 32px',
+              borderRadius: 8,
+              border: 'none',
+              cursor: 'pointer',
+            }}
+            onClick={requestLogin}
+          >
+            Continue with Sky Mavis SSO
+          </button>
+        </>
+      )}
     </div>
   )
 }

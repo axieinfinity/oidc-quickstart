@@ -91,7 +91,10 @@ electron.ipcMain.handle("request_login", async () => {
     const callbackUrl = await urlPromise;
     const code = new URL(callbackUrl).searchParams.get("code");
     if (!code) {
-      return null;
+      electron.dialog.showErrorBox("Error", "Code not found!");
+      return {
+        token: null
+      };
     }
     const { data } = await axios({
       baseURL: SERVER_ENDPOINT,
@@ -99,13 +102,16 @@ electron.ipcMain.handle("request_login", async () => {
       method: "POST",
       data: {
         code,
-        grant_type: "code",
-        scope: "openid offline"
+        redirect_url: "mavis-sso://oauth2/callback"
       }
     });
     return {
       token: data
     };
-  } catch (error) {
+  } catch {
+    electron.dialog.showErrorBox("Error", "Something went wrong!");
+    return {
+      token: null
+    };
   }
 });

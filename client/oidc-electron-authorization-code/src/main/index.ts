@@ -1,6 +1,6 @@
 require('dotenv').config({ path: '../../.env' })
 import 'isomorphic-fetch'
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import crypto from 'crypto'
@@ -136,7 +136,11 @@ ipcMain.handle('request_login', async () => {
     const code = new URL(callbackUrl).searchParams.get('code')
 
     if (!code) {
-      return null
+      dialog.showErrorBox('Error', 'Code not found!')
+
+      return {
+        token: null,
+      }
     }
 
     const { data } = await axios({
@@ -145,24 +149,20 @@ ipcMain.handle('request_login', async () => {
       method: 'POST',
       data: {
         code,
-        grant_type: 'code',
-        scope: 'openid offline',
+        redirect_url: 'mavis-sso://oauth2/callback',
       },
     })
 
     return {
       token: data,
     }
-    // const tokenResponse = await fetch(`${SERVER_ENDPOINT}/oauth2/token`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     code,
-    //   }),
-    // }).then(res => res.json())
-  } catch (error) {}
+  } catch {
+    dialog.showErrorBox('Error', 'Something went wrong!')
+
+    return {
+      token: null,
+    }
+  }
 })
 
 // In this file you can include the rest of your app"s specific main process
