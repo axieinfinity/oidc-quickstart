@@ -135,7 +135,7 @@ app.post(
     }>,
     res,
   ) => {
-    const { code, code_verifier, redirect_uri, authorization_method } = req.body
+    const { code, redirect_uri, code_verifier, authorization_method } = req.body
 
     const headers: Record<string, string> = {
       'content-type': 'application/x-www-form-urlencoded',
