@@ -19,7 +19,6 @@
     "author": "Web Dev",
     "dependencies": {
         "@types/webextension-polyfill": "^0.10.0",
-        "axios": "^1.4.0",
         "buffer": "^6.0.3",
         "clean-webpack-plugin": "^4.0.0",
         "copy-webpack-plugin": "^11.0.0",
