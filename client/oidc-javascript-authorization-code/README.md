@@ -8,23 +8,7 @@ Your app must be allowlisted to access the OAuth 2.0 APIs. Follow the steps in t
 
 ## Getting Started:
 
-### Start authenticate server:
-
-Change working directory to `authenticate-server`:
-
-1. Run: `npm install`
-2. Clone `.env.example` -> `.env` and update .env content
-3. Run `npm run start`
-
 ### Start Client:
 
-1. Run: `npm install`
-2. Update for clientId at `javascript/login.js`
-
-```javascript
-const client = new SkyMavisOAuth2Client({
-  clientId: 'your_client_id',
-})
-```
-
-3. Run: `npm run start`
+1. Run: `pnpm install`
+2. Run: `pnpm dev`
