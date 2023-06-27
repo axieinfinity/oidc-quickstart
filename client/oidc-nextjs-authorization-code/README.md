@@ -1,4 +1,4 @@
-# Implementation for Electron
+# Implementation for Nextjs
 
 Sample using Electron.
 
