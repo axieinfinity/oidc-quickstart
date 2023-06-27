@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { runtime } from 'webextension-polyfill';
-import { SERVER_ENDPOINT } from 'utils/env';
+import { runtime, storage } from 'webextension-polyfill';
 
 export const Popup = () => {
     const [loading, setLoading] = useState(false);
@@ -13,29 +11,19 @@ export const Popup = () => {
         setLoading(true);
     };
 
+    const handleGetToken = async () => {
+        const { token = null } = await storage.local.get('token');
+        setToken(token);
+    };
+
+    const resetLogin = () => {
+        storage.local.remove('token');
+        setToken(null);
+        setLoading(false);
+    };
+
     useEffect(() => {
-        runtime.onMessage.addListener(async function (message) {
-            switch (message.type) {
-                case 'response_login': {
-                    try {
-                        const { code, redirect_uri } = message.data;
-                        const { data } = await axios({
-                            baseURL: SERVER_ENDPOINT,
-                            url: '/oauth2/authorization-code/token',
-                            method: 'POST',
-                            data: {
-                                code,
-                                redirect_uri,
-                            },
-                        });
-                        setToken(data);
-                        setLoading(false);
-                    } catch (error) {
-                        console.log('error', error);
-                    }
-                }
-            }
-        });
+        handleGetToken();
     }, []);
 
     return (
@@ -54,6 +42,18 @@ export const Popup = () => {
                     <pre style={{ whiteSpace: 'pre-wrap', width: 200, overflow: 'auto' }}>
                         {JSON.stringify(token, null, 2)}
                     </pre>
+                    <button
+                        style={{
+                            padding: '12px 32px',
+                            borderRadius: 8,
+                            border: 'none',
+                            cursor: 'pointer',
+                            marginBottom: 50,
+                        }}
+                        onClick={resetLogin}
+                    >
+                        Reset
+                    </button>
                 </>
             ) : (
                 <>

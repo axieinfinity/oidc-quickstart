@@ -1,5 +1,5 @@
-import { CLIENT_ID, SSO_ENDPOINT } from 'utils/env';
-import { runtime, tabs, Tabs, Runtime } from 'webextension-polyfill';
+import { CLIENT_ID, SERVER_ENDPOINT, SSO_ENDPOINT } from 'utils/env';
+import { runtime, tabs, Tabs, Runtime, storage } from 'webextension-polyfill';
 
 const browser: any = (() => {
     if (typeof chrome === 'object') {
@@ -85,7 +85,19 @@ class Background {
                                 return null;
                             }
                             const code = new URL(callbackUrl).searchParams.get('code') || '';
-                            runtime.sendMessage({ data: { code, redirect_uri }, type: 'response_login' });
+
+                            const data = await fetch(`${SERVER_ENDPOINT}/oauth2/authorization-code/token`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    code,
+                                    redirect_uri,
+                                }),
+                            }).then((res) => res.json());
+
+                            storage.local.set({ token: data });
                         }
                     );
                 }
