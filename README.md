@@ -7,9 +7,7 @@
    - Docs: https://docs.skymavis.com/docs/sma-get-started
    - Developer Portal: https://developers.skymavis.one/
 
-2. Make sure you have [Node.js](https://nodejs.org/en) or [Unity](https://unity.com/).
-
-3. Create a `.env` file at the root of your project directory and add environment variables you need for your project. Check out file `.env.example`:
+2. Create a `.env` file at the root of your project directory and add environment variables you need for your project. Check out file `.env.example`:
 
 ```
 # COMMON ENV
