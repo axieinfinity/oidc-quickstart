@@ -1,6 +1,6 @@
-# Implementation for Node
+# Implementation for Nextjs
 
-Sample using Fastify.
+Sample using Electron.
 
 ## Getting Started:
 
@@ -10,19 +10,3 @@ Your app must be allowlisted to access the OAuth 2.0 APIs. Follow the steps in t
 
 1. Run: `pnpm install`
 2. Run: `pnpm dev`
-
-```
-/oauth2/authorization-code/token
-```
-
-```
-/oauth2/userinfo
-```
-
-```
-/oauth2/ropc/token
-```
-
-```
-/oauth2/ropc/mfa'
-```
