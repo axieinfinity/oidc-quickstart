@@ -19,24 +19,32 @@
 
 ```
 # COMMON ENV
-
 CLIENT_ID=<your_client_id>
-CALLBACK_URL=<http://localhost:3000/oauth2/callback>
+CALLBACK_URL=http://localhost:3000/oauth2/callback
 
 # CLIENT ENV
+GEETEST_ENDPOINT=https://captcha.skymavis.one/api/geetest/register
+SSO_AUTHORIZATION_ENDPOINT=https://api-gateway.skymavis.one/oauth2/auth
 
-GEETEST_ENDPOINT=<https://captcha.skymavis.one/api/geetest/register>
+# SSO ENV
+SSO_ENDPOINT=https://api-gateway.skymavis.one
+SSO_JWKS_ENDPOINT=https://api-gateway.skymavis.one/account/.well-known/jwks.json
+SSO_TOKEN_ENDPOINT=https://api-gateway.skymavis.one/account/oauth2/token
+SSO_USERINFO_ENDPOINT=https://api-gateway.skymavis.one/account/userinfo
 
 # SERVER ENV
-
 SERVER_PORT=8080
-SSO_ENDPOINT=<https://api-gateway.skymavis.one>
+SERVER_ENDPOINT=http://localhost:8080
+SERVER_TOKEN_ENDPOINT=http://localhost:8080/oauth2/authorization-code/token
+SERVER_ROPC_TOKEN_ENDPOINT=http://localhost:8080/oauth2/ropc/mfa
+SERVER_ROPC_MFA_ENDPOINT=http://localhost:8080/oauth2/ropc/mfa
+SERVER_USERINFO_ENDPOINT=http://localhost:8080/oauth2/userinfo
 API_KEY=<your_api_key>
 CLIENT_SECRET=<your_client_secret>
 
 # ELECTRON ENV
-
 CALLBACK_DEEPLINK=mavis-sso://oauth2/callback
+
 ```
 
 ## How to run
