@@ -1,4 +1,4 @@
-import { CLIENT_ID, SERVER_ENDPOINT, SSO_ENDPOINT } from 'utils/env';
+import { CLIENT_ID, SERVER_TOKEN_ENDPOINT, SSO_AUTHORIZATION_ENDPOINT } from 'utils/env';
 import { runtime, tabs, Tabs, Runtime, storage } from 'webextension-polyfill';
 
 const browser: any = (() => {
@@ -75,7 +75,7 @@ class Background {
                         redirect_uri,
                     });
 
-                    const url = `${SSO_ENDPOINT}/oauth2/auth?${query.toString()}`;
+                    const url = `${SSO_AUTHORIZATION_ENDPOINT}?${query.toString()}`;
 
                     browser.identity.launchWebAuthFlow(
                         { url, interactive: true },
@@ -86,7 +86,7 @@ class Background {
                             }
                             const code = new URL(callbackUrl).searchParams.get('code') || '';
 
-                            const data = await fetch(`${SERVER_ENDPOINT}/oauth2/authorization-code/token`, {
+                            const data = await fetch(SERVER_TOKEN_ENDPOINT, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',

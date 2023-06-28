@@ -2,7 +2,7 @@ import axios, { AxiosError, isAxiosError } from 'axios'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
 
-const SERVER_ENDPOINT = process.env.SERVER_ENDPOINT ?? 'http://localhost:8080'
+const SERVER_TOKEN_ENDPOINT = process.env.SERVER_TOKEN_ENDPOINT ?? 'http://localhost:8080/oauth2/authorization-code/token'
 const CALLBACK_URL =
   process.env.CALLBACK_URL ?? 'http://localhost:3000/oauth2/callback'
 
@@ -19,8 +19,7 @@ const Callback = () => {
       if (!code || !code_verifier) return
 
       const { data } = await axios({
-        baseURL: SERVER_ENDPOINT,
-        url: '/oauth2/authorization-code/token',
+        url: SERVER_TOKEN_ENDPOINT,
         method: 'POST',
         data: {
           code,

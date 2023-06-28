@@ -7,7 +7,8 @@ import MFAModal, { MFAMode } from './_MFAModal'
 import axios, { AxiosError, isAxiosError } from 'axios'
 
 const GEETEST_ENDPOINT = process.env.GEETEST_ENDPOINT
-const SERVER_ENDPOINT = process.env.SERVER_ENDPOINT ?? 'http://localhost:8080'
+const SERVER_ROPC_TOKEN_ENDPOINT = process.env.SERVER_ROPC_TOKEN_ENDPOINT ?? 'http://localhost:8080/oauth2/ropc/mfa'
+const SERVER_ROPC_MFA_ENDPOINT = process.env.SERVER_ROPC_MFA_ENDPOINT ?? 'http://localhost:8080/oauth2/ropc/mfa'
 
 const { Title } = Typography
 
@@ -35,8 +36,7 @@ export default function Home() {
       setMFALoading(true)
 
       const { data } = await axios({
-        baseURL: SERVER_ENDPOINT,
-        url: '/oauth2/ropc/mfa',
+        url: SERVER_ROPC_MFA_ENDPOINT,
         method: 'POST',
         data: {
           code,
@@ -105,8 +105,7 @@ export default function Home() {
       const { email, password } = values
 
       const { data } = await axios({
-        baseURL: SERVER_ENDPOINT,
-        url: '/oauth2/ropc/token',
+        url: SERVER_ROPC_TOKEN_ENDPOINT,
         method: 'POST',
         data: {
           captcha,

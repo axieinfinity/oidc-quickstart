@@ -1,6 +1,7 @@
 import React from 'react'
 
 const CLIENT_ID = process.env.CLIENT_ID ?? ''
+const SSO_AUTHORIZATION_ENDPOINT = process.env.SSO_AUTHORIZATION_ENDPOINT ?? ''
 const CALLBACK_URL =
   process.env.CALLBACK_URL ?? 'http://localhost:3000/oauth2/callback'
 const SSO_ENDPOINT =
@@ -16,7 +17,7 @@ export default function Home() {
       scopes: 'openid',
     })
 
-    window.open(`${SSO_ENDPOINT}/oauth2/auth?${query.toString()}`, '_self')
+    window.open(`${SSO_AUTHORIZATION_ENDPOINT}?${query.toString()}`, '_self')
   }
 
   return (

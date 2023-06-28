@@ -7,7 +7,15 @@
    - Docs: https://docs.skymavis.com/docs/sma-get-started
    - Developer Portal: https://developers.skymavis.one/
 
-2. Create a `.env` file at the root of your project directory and add environment variables you need for your project. Check out file `.env.example`:
+2. When you have access to the Sky Mavis Account service, open the Developer Console > Products > OAuth 2.0 to configure the client-side settings.
+
+   - CLIENT ID
+   - CLIENT SECRET
+   - SIGN IN REDIRECT URI (CALLBACK_URL)
+
+<img src="https://files.readme.io/284792b-small-app-oauth-configuration.png" alt="MarineGEO circle logo"/>
+
+3. Create a `.env` file at the root of your project directory and add environment variables you need for your project. Check out file `.env.example`:
 
 ```
 # COMMON ENV
