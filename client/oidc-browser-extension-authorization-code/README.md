@@ -14,11 +14,11 @@ Your app must be allowlisted to access the OAuth 2.0 APIs. Follow the steps in t
 
 _Load the extension in Chrome_
 
--   Open Chrome browser and navigate to chrome://extensions
--   Select "Developer Mode" and then click "Load unpacked extension..."
--   From the file browser, choose to extension/dev/chrome or > (extension/dev/chrome)
+- Open Chrome browser and navigate to chrome://extensions
+- Select "Developer Mode" and then click "Load unpacked extension..."
+- From the file browser, choose to extension/dev/chrome or > (extension/dev/chrome)
 
 _Load the extension in Firefox_
 
--   Open Firefox browser and navigate to about:debugging
--   Click "Load Temporary Add-on" and from the file browser, choose >> extension/dev/firefox
+- Open Firefox browser and navigate to about:debugging
+- Click "Load Temporary Add-on" and from the file browser, choose >> extension/dev/firefox

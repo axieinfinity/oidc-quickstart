@@ -7,8 +7,12 @@ import MFAModal, { MFAMode } from './_MFAModal'
 import axios, { AxiosError, isAxiosError } from 'axios'
 
 const GEETEST_ENDPOINT = process.env.GEETEST_ENDPOINT
-const SERVER_ROPC_TOKEN_ENDPOINT = process.env.SERVER_ROPC_TOKEN_ENDPOINT ?? 'http://localhost:8080/oauth2/ropc/mfa'
-const SERVER_ROPC_MFA_ENDPOINT = process.env.SERVER_ROPC_MFA_ENDPOINT ?? 'http://localhost:8080/oauth2/ropc/mfa'
+const SERVER_ROPC_TOKEN_ENDPOINT =
+  process.env.SERVER_ROPC_TOKEN_ENDPOINT ??
+  'http://localhost:8080/oauth2/ropc/mfa'
+const SERVER_ROPC_MFA_ENDPOINT =
+  process.env.SERVER_ROPC_MFA_ENDPOINT ??
+  'http://localhost:8080/oauth2/ropc/mfa'
 
 const { Title } = Typography
 

@@ -5,7 +5,8 @@ const CLIENT_ID = process.env.CLIENT_ID ?? ''
 const CALLBACK_URL =
   process.env.CALLBACK_URL ?? 'http://localhost:3000/oauth2/callback'
 const SSO_AUTHORIZATION_ENDPOINT =
-  process.env.SSO_AUTHORIZATION_ENDPOINT || 'https://api-gateway.skymavis.one/account/oauth2/auth'
+  process.env.SSO_AUTHORIZATION_ENDPOINT ||
+  'https://api-gateway.skymavis.one/account/oauth2/auth'
 
 const generateRandomString = (length = 50) => {
   const characters =
