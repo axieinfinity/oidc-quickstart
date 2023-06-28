@@ -2,7 +2,9 @@ import axios, { AxiosError, isAxiosError } from 'axios'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
 
-const SERVER_TOKEN_ENDPOINT = process.env.SERVER_TOKEN_ENDPOINT ?? 'http://localhost:8080/oauth2/authorization-code/token'
+const SERVER_TOKEN_ENDPOINT =
+  process.env.SERVER_TOKEN_ENDPOINT ??
+  'http://localhost:8080/oauth2/authorization-code/token'
 const CALLBACK_URL =
   process.env.CALLBACK_URL ?? 'http://localhost:3000/oauth2/callback'
 

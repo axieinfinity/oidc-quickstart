@@ -6,11 +6,14 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import crypto from 'crypto'
 import axios from 'axios'
 
-const SERVER_TOKEN_ENDPOINT = process.env.SERVER_TOKEN_ENDPOINT ?? 'http://localhost:8080/oauth2/authorization-code/token'
+const SERVER_TOKEN_ENDPOINT =
+  process.env.SERVER_TOKEN_ENDPOINT ??
+  'http://localhost:8080/oauth2/authorization-code/token'
 const CALLBACK_DEEPLINK =
   process.env.CALLBACK_DEEPLINK ?? 'mavis-sso://oauth2/callback'
 const SSO_AUTHORIZATION_ENDPOINT =
-  process.env.SSO_AUTHORIZATION_ENDPOINT || 'https://api-gateway.skymavis.one/account/oauth2/auth'
+  process.env.SSO_AUTHORIZATION_ENDPOINT ||
+  'https://api-gateway.skymavis.one/account/oauth2/auth'
 const CLIENT_ID = process.env.CLIENT_ID ?? ''
 
 const gotTheLock = app.requestSingleInstanceLock()
