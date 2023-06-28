@@ -15,8 +15,7 @@
 
 <img src="https://files.readme.io/284792b-small-app-oauth-configuration.png" alt="MarineGEO circle logo"/>
 
-
-2. Create a `.env` file at the root of your project directory and add environment variables you need for your project. Check out file `.env.example`:
+3. Create a `.env` file at the root of your project directory and add environment variables you need for your project. Check out file `.env.example`:
 
 ```
 # COMMON ENV
