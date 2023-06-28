@@ -1,7 +1,7 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import QRCode from 'qrcode.react'
-import axios from 'axios'
+import axios, { isAxiosError } from 'axios'
 
 export const SERVER_RONIN_NONCE_ENDPOINT =
   process.env.SERVER_RONIN_NONCE_ENDPOINT ??
@@ -68,7 +68,8 @@ Not Before: ${notBefore}`
 }
 
 export default function Home() {
-  const [token, setToken] = React.useState(null)
+  const [token, setToken] = useState(null)
+  const [error, setError] = useState(null)
   const [uri, setUri] = React.useState('')
   const providerRef = useRef<InstanceType<typeof EthereumProvider> | null>(null)
 
@@ -161,8 +162,13 @@ export default function Home() {
       })
 
       setToken(data.token)
-    } catch (error) {
-      console.log('error', error)
+    } catch (error: any) {
+      if (isAxiosError(error)) {
+        setError(error?.response?.data)
+        return
+      }
+
+      setError(error)
     }
   }
 
@@ -177,36 +183,59 @@ export default function Home() {
           marginTop: '100px',
         }}
       >
-        {token ? (
-          <>
-            <h1>Login successful!</h1>
+        {(() => {
+          if (error)
+            return (
+              <>
+                <h1>Login failed!</h1>
+                <pre
+                  style={{
+                    whiteSpace: 'pre-wrap',
+                    width: 600,
+                    overflow: 'auto',
+                  }}
+                >
+                  {JSON.stringify(error, null, 2)}
+                </pre>
+              </>
+            )
 
-            <pre
-              style={{ whiteSpace: 'pre-wrap', width: 600, overflow: 'auto' }}
-            >
-              {JSON.stringify(token, null, 2)}
-            </pre>
-          </>
-        ) : (
-          <>
-            <h1>Login</h1>
+          if (!token)
+            return (
+              <>
+                <h1>Login</h1>
+                <button
+                  style={{
+                    padding: '12px 32px',
+                    marginBottom: 12,
+                    borderRadius: 8,
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}
+                  onClick={linkRoninWallet}
+                >
+                  Generate QR Code
+                </button>
+                {uri && <QRCode value={uri} size={178} />}
+              </>
+            )
 
-            <button
-              style={{
-                padding: '12px 32px',
-                marginBottom: 12,
-                borderRadius: 8,
-                border: 'none',
-                cursor: 'pointer',
-              }}
-              onClick={linkRoninWallet}
-            >
-              Generate QR Code
-            </button>
-
-            {uri && <QRCode value={uri} size={178} />}
-          </>
-        )}
+          if (token)
+            return (
+              <>
+                <h1>Login successful!</h1>
+                <pre
+                  style={{
+                    whiteSpace: 'pre-wrap',
+                    width: 600,
+                    overflow: 'auto',
+                  }}
+                >
+                  {JSON.stringify(token, null, 2)}
+                </pre>
+              </>
+            )
+        })()}
       </div>
     </main>
   )
