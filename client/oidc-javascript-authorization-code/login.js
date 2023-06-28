@@ -3,7 +3,7 @@ export async function onLoad(container) {
   if (code) {
     const { data } = await axios({
       baseURL: SERVER_ENDPOINT,
-      url: '/oauth2/authorization-code/token',
+      url: SERVER_TOKEN_ENDPOINT,
       method: 'POST',
       data: {
         code,
@@ -31,7 +31,7 @@ export async function onLoad(container) {
     redirect_uri: CALLBACK_URL,
   })
 
-  const url = `${SSO_ENDPOINT}/oauth2/auth?${query.toString()}`
+  const url = `${SSO_AUTHORIZATION_ENDPOINT}?${query.toString()}`
 
   const loginButton = document.createElement('button')
   loginButton.setAttribute('type', 'button')
