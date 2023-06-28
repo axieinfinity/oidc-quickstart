@@ -23,7 +23,7 @@ export default function Home() {
     open: false,
     token: '',
   })
-  const [token, setToken] = React.useState(false)
+  const [token, setToken] = React.useState(null)
   const [notify, contextHolder] = notification.useNotification()
   const { requestCaptcha } = useBindCaptcha(GEETEST_ENDPOINT)
 

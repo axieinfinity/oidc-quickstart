@@ -218,6 +218,85 @@ app.get('/oauth2/userinfo', async (req, res) => {
   }
 })
 
+app.get(
+  '/oauth2/ronin/fetch-nonce',
+  async (
+    req: FastifyRequest<{
+      Querystring: { address: string }
+    }>,
+    res,
+  ) => {
+    try {
+      const { address } = req.query
+
+      const { data } = await axios({
+        baseURL: 'https://athena.skymavis.one/',
+        url: 'v2/public/auth/ronin/fetch-nonce',
+        params: {
+          address,
+        },
+      })
+
+      return data
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        const errorStatus = axiosError.response?.status
+        const errorData = axiosError.response?.data
+        return res.status(errorStatus ?? 400).send(errorData)
+      }
+
+      return res.status(400).send('Something went wrong.')
+    }
+  },
+)
+
+app.post(
+  '/oauth2/ronin/token',
+  async (
+    req: FastifyRequest<{
+      Body: {
+        message: string
+        signature: string
+      }
+    }>,
+    res,
+  ) => {
+    try {
+      const { message, signature } = req.body
+
+      const { data } = await axios({
+        baseURL: SSO_ENDPOINT,
+        url: `/account/oauth2/token`,
+        method: 'POST',
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded',
+          'x-api-key': API_KEY,
+        },
+        data: {
+          message,
+          signature,
+          client_id: CLIENT_ID,
+          client_secret: CLIENT_SECRET,
+          grant_type: 'ronin',
+          scope: 'openid offline',
+        },
+      })
+
+      return { token: data }
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const axiosError = error as AxiosError
+        const errorStatus = axiosError.response?.status
+        const errorData = axiosError.response?.data
+        return res.status(errorStatus ?? 400).send(errorData)
+      }
+
+      return res.status(400).send('Something went wrong.')
+    }
+  },
+)
+
 const run = async () => {
   process.on('unhandledRejection', err => {
     console.error(err)
