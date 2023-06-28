@@ -1,5 +1,5 @@
 require('dotenv').config({ path: '../../.env' })
-import Fastify, { FastifyRequest } from 'fastify'
+import Fastify, { FastifyReply, FastifyRequest } from 'fastify'
 import cors from '@fastify/cors'
 import axios, { AxiosError, isAxiosError } from 'axios'
 
@@ -27,6 +27,17 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET || ''
 
 const app = Fastify()
 
+app.setErrorHandler(function (error, _, res) {
+  if (isAxiosError(error)) {
+    const axiosError = error as AxiosError
+    const errorStatus = axiosError.response?.status
+    const errorData = axiosError.response?.data
+    return res.status(errorStatus ?? 400).send(errorData)
+  }
+
+  return res.status(400).send('Something went wrong.')
+})
+
 app.register(cors, {
   methods: ['GET', 'PUT', 'POST'],
   origin: '*',
@@ -47,38 +58,27 @@ app.post(
   ) => {
     const { email: username, password, captcha } = req.body
 
-    try {
-      const { data } = await axios({
-        baseURL: SSO_ENDPOINT,
-        url: 'account/oauth2/token',
-        method: 'POST',
-        headers: {
-          'content-type': 'application/x-www-form-urlencoded',
-          'x-api-key': API_KEY,
-          'x-captcha': JSON.stringify(captcha),
-        },
-        data: {
-          username,
-          password,
-          client_id: CLIENT_ID,
-          client_secret: CLIENT_SECRET,
-          grant_type: 'password',
-          scope: 'openid offline',
-        },
-      })
+    const { data } = await axios({
+      baseURL: SSO_ENDPOINT,
+      url: 'account/oauth2/token',
+      method: 'POST',
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded',
+        'x-api-key': API_KEY,
+        'x-captcha': JSON.stringify(captcha),
+      },
+      data: {
+        username,
+        password,
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET,
+        grant_type: 'password',
+        scope: 'openid offline',
+      },
+    })
 
-      return {
-        token: data,
-      }
-    } catch (error) {
-      if (isAxiosError(error)) {
-        const axiosError = error as AxiosError
-        const errorStatus = axiosError.response?.status
-        const errorData = axiosError.response?.data
-        return res.status(errorStatus ?? 400).send(errorData)
-      }
-
-      return res.status(400).send('Something went wrong.')
+    return {
+      token: data,
     }
   },
 )
@@ -93,36 +93,25 @@ app.post(
   ) => {
     const { code, MFAtoken } = req.body
 
-    try {
-      const { data } = await axios({
-        baseURL: SSO_ENDPOINT,
-        url: 'account/oauth2/token',
-        method: 'POST',
-        headers: {
-          'content-type': 'application/x-www-form-urlencoded',
-          'x-api-key': API_KEY,
-        },
-        data: {
-          grant_type: 'mfa-otp',
-          otp: code,
-          mfa_token: MFAtoken,
-          client_id: CLIENT_ID,
-          client_secret: CLIENT_SECRET,
-        },
-      })
+    const { data } = await axios({
+      baseURL: SSO_ENDPOINT,
+      url: 'account/oauth2/token',
+      method: 'POST',
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded',
+        'x-api-key': API_KEY,
+      },
+      data: {
+        grant_type: 'mfa-otp',
+        otp: code,
+        mfa_token: MFAtoken,
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET,
+      },
+    })
 
-      return {
-        token: data,
-      }
-    } catch (error) {
-      if (isAxiosError(error)) {
-        const axiosError = error as AxiosError
-        const errorStatus = axiosError.response?.status
-        const errorData = axiosError.response?.data
-        return res.status(errorStatus ?? 400).send(errorData)
-      }
-
-      return res.status(400).send('Something went wrong.')
+    return {
+      token: data,
     }
   },
 )
@@ -162,27 +151,16 @@ app.post(
       body.code_verifier = code_verifier
     }
 
-    try {
-      const { data } = await axios({
-        baseURL: SSO_ENDPOINT,
-        url: `/account/oauth2/token`,
-        method: 'POST',
-        headers,
-        data: body,
-      })
+    const { data } = await axios({
+      baseURL: SSO_ENDPOINT,
+      url: `/account/oauth2/token`,
+      method: 'POST',
+      headers,
+      data: body,
+    })
 
-      return {
-        data,
-      }
-    } catch (error) {
-      if (isAxiosError(error)) {
-        const axiosError = error as AxiosError
-        const errorStatus = axiosError.response?.status
-        const errorData = axiosError.response?.data
-        return res.status(errorStatus ?? 400).send(errorData)
-      }
-
-      return res.status(400).send('Something went wrong.')
+    return {
+      data,
     }
   },
 )
@@ -195,26 +173,15 @@ app.get('/oauth2/userinfo', async (req, res) => {
     'x-api-key': API_KEY,
     authorization: `Bearer ${accessToken}`,
   }
-  try {
-    const { data } = await axios({
-      baseURL: SSO_ENDPOINT,
-      url: `account/userinfo`,
-      method: 'GET',
-      headers,
-    })
+  const { data } = await axios({
+    baseURL: SSO_ENDPOINT,
+    url: `account/userinfo`,
+    method: 'GET',
+    headers,
+  })
 
-    return {
-      data,
-    }
-  } catch (error) {
-    if (isAxiosError(error)) {
-      const axiosError = error as AxiosError
-      const errorStatus = axiosError.response?.status
-      const errorData = axiosError.response?.data
-      return res.status(errorStatus ?? 400).send(errorData)
-    }
-
-    return res.status(400).send('Something went wrong.')
+  return {
+    data,
   }
 })
 
@@ -226,28 +193,17 @@ app.get(
     }>,
     res,
   ) => {
-    try {
-      const { address } = req.query
+    const { address } = req.query
 
-      const { data } = await axios({
-        baseURL: 'https://athena.skymavis.one/',
-        url: 'v2/public/auth/ronin/fetch-nonce',
-        params: {
-          address,
-        },
-      })
+    const { data } = await axios({
+      baseURL: 'https://athena.skymavis.one/',
+      url: 'v2/public/auth/ronin/fetch-nonce',
+      params: {
+        address,
+      },
+    })
 
-      return data
-    } catch (error) {
-      if (isAxiosError(error)) {
-        const axiosError = error as AxiosError
-        const errorStatus = axiosError.response?.status
-        const errorData = axiosError.response?.data
-        return res.status(errorStatus ?? 400).send(errorData)
-      }
-
-      return res.status(400).send('Something went wrong.')
-    }
+    return data
   },
 )
 
@@ -262,38 +218,27 @@ app.post(
     }>,
     res,
   ) => {
-    try {
-      const { message, signature } = req.body
+    const { message, signature } = req.body
 
-      const { data } = await axios({
-        baseURL: SSO_ENDPOINT,
-        url: `/account/oauth2/token`,
-        method: 'POST',
-        headers: {
-          'content-type': 'application/x-www-form-urlencoded',
-          'x-api-key': API_KEY,
-        },
-        data: {
-          message,
-          signature,
-          client_id: CLIENT_ID,
-          client_secret: CLIENT_SECRET,
-          grant_type: 'ronin',
-          scope: 'openid offline',
-        },
-      })
+    const { data } = await axios({
+      baseURL: SSO_ENDPOINT,
+      url: `/account/oauth2/token`,
+      method: 'POST',
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded',
+        'x-api-key': API_KEY,
+      },
+      data: {
+        message,
+        signature,
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET,
+        grant_type: 'ronin',
+        scope: 'openid offline',
+      },
+    })
 
-      return { token: data }
-    } catch (error) {
-      if (isAxiosError(error)) {
-        const axiosError = error as AxiosError
-        const errorStatus = axiosError.response?.status
-        const errorData = axiosError.response?.data
-        return res.status(errorStatus ?? 400).send(errorData)
-      }
-
-      return res.status(400).send('Something went wrong.')
-    }
+    return { token: data }
   },
 )
 
