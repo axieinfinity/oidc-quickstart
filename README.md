@@ -4,8 +4,8 @@
 
 1. Request access to Sky Mavis Account and configure client settings.
 
-   - Docs: https://docs.skymavis.com/docs/sma-get-started
-   - Developer Portal: https://developers.skymavis.one/
+   - Docs: <https://docs.skymavis.com/docs/sma-get-started>
+   - Developer Portal: <https://developers.skymavis.one/>
 
 2. When you have access to the Sky Mavis Account service, open the Developer Console > Products > OAuth 2.0 to configure the client-side settings.
 
@@ -18,33 +18,34 @@
 3. Create a `.env` file at the root of your project directory and add environment variables you need for your project. Check out file `.env.example`:
 
 ```
-# COMMON ENV
+## SSO ENV
+API_KEY=<your_api_key>
 CLIENT_ID=<your_client_id>
+CLIENT_SECRET=<your_client_secret>
 CALLBACK_URL=http://localhost:3000/oauth2/callback
+SCOPE=openid
 
-# CLIENT ENV
-GEETEST_ENDPOINT=https://captcha.skymavis.one/api/geetest/register
-SSO_AUTHORIZATION_ENDPOINT=https://api-gateway.skymavis.one/oauth2/auth
-
-# SSO ENV
 SSO_ENDPOINT=https://api-gateway.skymavis.one
+SSO_AUTHORIZATION_ENDPOINT=https://api-gateway.skymavis.one/oauth2/auth
 SSO_JWKS_ENDPOINT=https://api-gateway.skymavis.one/account/.well-known/jwks.json
 SSO_TOKEN_ENDPOINT=https://api-gateway.skymavis.one/account/oauth2/token
 SSO_USERINFO_ENDPOINT=https://api-gateway.skymavis.one/account/userinfo
 
-# SERVER ENV
+# NODEJS ENV
 SERVER_PORT=8080
 SERVER_ENDPOINT=http://localhost:8080
 SERVER_TOKEN_ENDPOINT=http://localhost:8080/oauth2/authorization-code/token
-SERVER_ROPC_TOKEN_ENDPOINT=http://localhost:8080/oauth2/ropc/mfa
+SERVER_ROPC_TOKEN_ENDPOINT=http://localhost:8080/oauth2/ropc/token
 SERVER_ROPC_MFA_ENDPOINT=http://localhost:8080/oauth2/ropc/mfa
 SERVER_USERINFO_ENDPOINT=http://localhost:8080/oauth2/userinfo
-API_KEY=<your_api_key>
-CLIENT_SECRET=<your_client_secret>
+SERVER_RONIN_NONCE_ENDPOINT=http://localhost:8080/oauth2/ronin/fetch-nonce
+SERVER_RONIN_TOKEN_ENDPOINT=http://localhost:8080/oauth2/ronin/token
 
 # ELECTRON ENV
 CALLBACK_DEEPLINK=mavis-sso://oauth2/callback
 
+# CAPTCHA ENV
+GEETEST_ENDPOINT=https://captcha.skymavis.one/api/geetest/register
 ```
 
 ## How to run
