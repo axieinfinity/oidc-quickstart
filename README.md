@@ -29,7 +29,7 @@ SSO_TOKEN_ENDPOINT=https://api-gateway.skymavis.one/account/oauth2/token
 SSO_USERINFO_ENDPOINT=https://api-gateway.skymavis.one/account/userinfo
 SSO_JWKS_ENDPOINT=https://api-gateway.skymavis.one/account/.well-known/jwks.json
 
-# SERVER ENDPIONTS
+# SERVER ENDPOINTS
 SERVER_TOKEN_ENDPOINT=http://localhost:8080/oauth2/authorization-code/token
 SERVER_REFRESH_TOKEN_ENDPOINT=http://localhost:8080/oauth2/authorization-code/refresh_token
 SERVER_ROPC_TOKEN_ENDPOINT=http://localhost:8080/oauth2/ropc/token
