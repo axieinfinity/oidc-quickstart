@@ -54,7 +54,6 @@ app.post(
     req: FastifyRequest<{
       Body: { email: string; password: string; captcha: GeetestCaptcha }
     }>,
-    res,
   ) => {
     const { email: username, password, captcha } = req.body
 
@@ -89,7 +88,6 @@ app.post(
     req: FastifyRequest<{
       Body: { code: string; MFAtoken: string }
     }>,
-    res,
   ) => {
     const { code, MFAtoken } = req.body
 
@@ -122,7 +120,6 @@ app.post(
     req: FastifyRequest<{
       Body: AuthorizationCodeRequest
     }>,
-    res,
   ) => {
     const { code, redirect_uri, code_verifier, authorization_method } = req.body
 
@@ -165,7 +162,7 @@ app.post(
   },
 )
 
-app.get('/oauth2/userinfo', async (req, res) => {
+app.get('/oauth2/userinfo', async req => {
   const accessToken = req.headers['authorization']
 
   const headers: Record<string, string> = {
@@ -191,7 +188,6 @@ app.get(
     req: FastifyRequest<{
       Querystring: { address: string }
     }>,
-    res,
   ) => {
     const { address } = req.query
 
@@ -216,7 +212,6 @@ app.post(
         signature: string
       }
     }>,
-    res,
   ) => {
     const { message, signature } = req.body
 
