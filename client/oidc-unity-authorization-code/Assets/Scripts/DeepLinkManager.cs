@@ -1,20 +1,21 @@
 using Scenes;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class DeepLinkManager : MonoBehaviour
+public class ProcessDeepLinkMngr : MonoBehaviour
 {
-    private static DeepLinkManager Instance { get; set; }
+    public static ProcessDeepLinkMngr Instance { get; private set; }
     public string deeplinkURL;
     private void Awake()
     {
         if (Instance == null)
         {
-            Instance = this;                
-            Application.deepLinkActivated += OnDeepLinkActivated;
+            Instance = this;
+            Application.deepLinkActivated += onDeepLinkActivated;
             if (!string.IsNullOrEmpty(Application.absoluteURL))
             {
                 // Cold start and Application.absoluteURL not null so process Deep Link.
-                OnDeepLinkActivated(Application.absoluteURL);
+                onDeepLinkActivated(Application.absoluteURL);
             }
             // Initialize DeepLink Manager global variable.
             else deeplinkURL = "[none]";
@@ -25,16 +26,10 @@ public class DeepLinkManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
- 
-    private void OnDeepLinkActivated(string url)
-    {
-        Debug.LogFormat("deeplink {0}", url);
-        // Update DeepLink Manager global variable, so URL can be accessed from anywhere.
-        deeplinkURL = url;
-        LoginManager.GetInstance().ShowUserInfo(deeplinkURL);
-// Decode the URL to determine action. 
-// In this example, the app expects a link formatted like this:
-// unitydl://mylink?scene1
 
+    private void onDeepLinkActivated(string url)
+    {
+        // Update DeepLink Manager global variable, so URL can be accessed from anywhere.
+        LoginController.getInstance().onExchangeCode(url);
     }
 }
