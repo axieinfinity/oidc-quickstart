@@ -19,17 +19,16 @@
 
 ```
 ## SSO ENV
+CLIENT_SECRET=<your_client_secret>
 API_KEY=<your_api_key>
 CLIENT_ID=<your_client_id>
-CLIENT_SECRET=<your_client_secret>
 CALLBACK_URL=http://localhost:3000/oauth2/callback
-SCOPE=openid
+SCOPE="openid offline"
 
-SSO_ENDPOINT=https://api-gateway.skymavis.one
 SSO_AUTHORIZATION_ENDPOINT=https://api-gateway.skymavis.one/oauth2/auth
-SSO_JWKS_ENDPOINT=https://api-gateway.skymavis.one/account/.well-known/jwks.json
 SSO_TOKEN_ENDPOINT=https://api-gateway.skymavis.one/account/oauth2/token
 SSO_USERINFO_ENDPOINT=https://api-gateway.skymavis.one/account/userinfo
+SSO_JWKS_ENDPOINT=https://api-gateway.skymavis.one/account/.well-known/jwks.json
 
 # NODEJS ENV
 SERVER_PORT=8080
@@ -50,15 +49,16 @@ GEETEST_ENDPOINT=https://captcha.skymavis.one/api/geetest/register
 
 ## How to run
 
-1. Go to your favorite sample, install packages. Example:
+1. Run Nodejs server:
+
+```bash
+cd server/nodejs
+pnpm install && pnpm dev
+```
+
+2. Go to your favorite sample, install packages and start:
 
 ```bash
 cd client/oidc-nextjs-ropc
-pnpm install
-```
-
-2. Finally, start your sample. Example:
-
-```bash
-pnpm dev
+pnpm install && pnpm dev
 ```
