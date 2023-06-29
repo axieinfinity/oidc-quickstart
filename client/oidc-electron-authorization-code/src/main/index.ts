@@ -152,14 +152,15 @@ ipcMain.handle('request_login', async () => {
       method: 'POST',
       data: {
         code,
-        redirect_url: CALLBACK_DEEPLINK,
+        redirect_uri: CALLBACK_DEEPLINK,
       },
     })
 
     return {
       token: data,
     }
-  } catch {
+  } catch (error) {
+    console.log('error', error)
     dialog.showErrorBox('Error', 'Something went wrong!')
 
     return {

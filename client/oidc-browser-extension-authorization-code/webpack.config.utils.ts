@@ -6,7 +6,6 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 
 import path from 'path'
 import { CleanWebpackPlugin } from 'clean-webpack-plugin'
-import ESLintPlugin from 'eslint-webpack-plugin'
 import WebpackExtensionManifestPlugin from 'webpack-extension-manifest-plugin'
 
 const ExtReloader = require('webpack-ext-reloader-mv3')
@@ -262,19 +261,6 @@ export const getExtensionManifestPlugins = () => {
       config: { base: (baseManifest as any)[EnvConfig.TARGET] },
     }),
   ]
-}
-
-export const eslintOptions = {
-  fix: true,
-}
-
-/**
- * Get Eslint Plugins
- *
- * @returns
- */
-export const getEslintPlugins = (options = eslintOptions) => {
-  return [new ESLintPlugin(options)]
 }
 
 /**
