@@ -18,7 +18,6 @@
 3. Create a `.env` file at the root of your project directory and add environment variables you need for your project. Check out file `.env.example`:
 
 ```
-## SSO ENV
 ## SKY MAVIS SSO ENV
 CLIENT_SECRET=<your_client_secret>
 API_KEY=<your_api_key>
