@@ -1,5 +1,6 @@
 import {
   CLIENT_ID,
+  SCOPE,
   SERVER_TOKEN_ENDPOINT,
   SSO_AUTHORIZATION_ENDPOINT,
 } from 'utils/env'
@@ -74,7 +75,7 @@ class Background {
             state: crypto.randomUUID(),
             client_id: CLIENT_ID,
             response_type: 'code',
-            scopes: 'openid',
+            scope: SCOPE,
             remember: 'false',
             redirect_uri,
           })

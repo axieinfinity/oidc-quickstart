@@ -91,6 +91,51 @@ app.post(
   },
 )
 
+/* -------------- Refresh Token -------------- */
+
+app.post(
+  '/oauth2/authorization-code/refresh_token',
+  async (
+    req: FastifyRequest<{
+      Body: { refresh_token: string; authorization_method?: string }
+    }>,
+  ) => {
+    const { refresh_token, authorization_method } = req.body
+
+    const headers: Record<string, string> = {
+      'content-type': 'application/x-www-form-urlencoded',
+      'x-api-key': API_KEY,
+    }
+
+    const body: Record<string, string> = {
+      refresh_token,
+      grant_type: 'refresh_token',
+    }
+
+    switch (authorization_method) {
+      case 'client_secret_basic':
+        headers.Authorization = `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`
+        headers.token_endpoint_auth_method = authorization_method
+        break
+      default:
+        body.client_id = CLIENT_ID
+        body.client_secret = CLIENT_SECRET
+    }
+
+    const { data } = await axios({
+      baseURL: SSO_ENDPOINT,
+      url: `/account/oauth2/token`,
+      method: 'POST',
+      headers,
+      data: body,
+    })
+
+    return {
+      data,
+    }
+  },
+)
+
 /* -------------------------------------------- */
 /*      RESOURCE OWNER PASSWORD CREDENTIALS     */
 /* -------------------------------------------- */

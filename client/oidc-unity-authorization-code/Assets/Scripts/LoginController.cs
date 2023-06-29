@@ -16,6 +16,7 @@ namespace Scenes
 		public Text txtResponse;
 
 		public string CLIENT_ID = "2cae5412-1ff5-4081-b51c-20a7ac319374";
+		public string SCOPE = "openid offline";
 		public string REDIRECT_URI = "demologin://platform";
 		public string SSO_AUTHORIZATION_ENDPOINT = "https://api-gateway.skymavis.one/oauth2/auth";
 		public string SERVER_TOKEN_ENDPOINT = "http://localhost:8080/oauth2/authorization-code/token";
@@ -55,7 +56,7 @@ namespace Scenes
 			collection.Add("state", myuuidAsString);
 			collection.Add("client_id", CLIENT_ID);
 			collection.Add("response_type", "code");
-			collection.Add("scopes", "openid offline_access");
+			collection.Add("scope", SCOPE);
 			collection.Add("redirect_uri", REDIRECT_URI);
 
 			string url = SSO_AUTHORIZATION_ENDPOINT + ToQueryString(collection);
@@ -73,7 +74,7 @@ namespace Scenes
 			txtResponse.text = "Requesting ...";
 
 			Uri myUri = new Uri(url);
-            string code = HttpUtility.ParseQueryString(myUri.Query).Get("code");
+			string code = HttpUtility.ParseQueryString(myUri.Query).Get("code");
 
 			string json = "{\"code\":\"" + code + "\",\"redirect_uri\":\""+REDIRECT_URI+ "\"}";
 
@@ -90,7 +91,7 @@ namespace Scenes
 				var responseText = exchangeRequest.downloadHandler.text;
 				txtResponse.text = responseText;
 			}
-        }
+		}
 
 	}
 }

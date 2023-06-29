@@ -15,6 +15,7 @@ const SSO_AUTHORIZATION_ENDPOINT =
   process.env.SSO_AUTHORIZATION_ENDPOINT ||
   'https://api-gateway.skymavis.one/account/oauth2/auth'
 const CLIENT_ID = process.env.CLIENT_ID ?? ''
+const SCOPE = process.env.SCOPE ?? 'openid offline'
 
 const gotTheLock = app.requestSingleInstanceLock()
 
@@ -127,7 +128,7 @@ ipcMain.handle('request_login', async () => {
     state: crypto.randomUUID(),
     client_id: CLIENT_ID,
     response_type: 'code',
-    scopes: 'openid',
+    scope: SCOPE,
     remember: 'false',
     redirect_uri: CALLBACK_DEEPLINK,
   })

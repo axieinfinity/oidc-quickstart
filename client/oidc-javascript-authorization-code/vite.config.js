@@ -14,6 +14,7 @@ export default defineConfig({
     SERVER_TOKEN_ENDPOINT: `"${process.env.SERVER_TOKEN_ENDPOINT}"`,
     SSO_AUTHORIZATION_ENDPOINT: `"${process.env.SSO_AUTHORIZATION_ENDPOINT}"`,
     CLIENT_ID: `"${process.env.CLIENT_ID}"`,
+    SCOPE: `"${process.env.SCOPE}"`,
     CALLBACK_URL: `"http://localhost:3000"`,
   },
 })

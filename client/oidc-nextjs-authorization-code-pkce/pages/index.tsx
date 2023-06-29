@@ -5,8 +5,10 @@ const CLIENT_ID = process.env.CLIENT_ID ?? ''
 const CALLBACK_URL =
   process.env.CALLBACK_URL ?? 'http://localhost:3000/oauth2/callback'
 const SSO_AUTHORIZATION_ENDPOINT =
-  process.env.SSO_AUTHORIZATION_ENDPOINT ||
+  process.env.SSO_AUTHORIZATION_ENDPOINT ??
   'https://api-gateway.skymavis.one/account/oauth2/auth'
+
+const SCOPE = process.env.SCOPE ?? ''
 
 const generateRandomString = (length = 50) => {
   const characters =
@@ -36,7 +38,7 @@ export default function Home() {
       client_id: CLIENT_ID,
       redirect_uri: CALLBACK_URL,
       response_type: 'code',
-      scopes: 'openid',
+      scope: SCOPE,
       code_challenge_method: 'S256',
       code_challenge: codeChallenge,
     })
