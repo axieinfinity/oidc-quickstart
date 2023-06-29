@@ -22,23 +22,24 @@
 CLIENT_SECRET=<your_client_secret>
 API_KEY=<your_api_key>
 CLIENT_ID=<your_client_id>
-CALLBACK_URL=http://localhost:3000/oauth2/callback
 SCOPE="openid offline"
-
+CALLBACK_URL=http://localhost:3000/oauth2/callback
 SSO_AUTHORIZATION_ENDPOINT=https://api-gateway.skymavis.one/oauth2/auth
 SSO_TOKEN_ENDPOINT=https://api-gateway.skymavis.one/account/oauth2/token
 SSO_USERINFO_ENDPOINT=https://api-gateway.skymavis.one/account/userinfo
 SSO_JWKS_ENDPOINT=https://api-gateway.skymavis.one/account/.well-known/jwks.json
 
-# NODEJS ENV
-SERVER_PORT=8080
-SERVER_ENDPOINT=http://localhost:8080
+# CLIENT ENV
 SERVER_TOKEN_ENDPOINT=http://localhost:8080/oauth2/authorization-code/token
+SERVER_REFRESH_TOKEN_ENDPOINT=http://localhost:8080/oauth2/authorization-code/refresh_token
 SERVER_ROPC_TOKEN_ENDPOINT=http://localhost:8080/oauth2/ropc/token
 SERVER_ROPC_MFA_ENDPOINT=http://localhost:8080/oauth2/ropc/mfa
 SERVER_USERINFO_ENDPOINT=http://localhost:8080/oauth2/userinfo
 SERVER_RONIN_NONCE_ENDPOINT=http://localhost:8080/oauth2/ronin/fetch-nonce
 SERVER_RONIN_TOKEN_ENDPOINT=http://localhost:8080/oauth2/ronin/token
+
+# NODEJS ENV
+SERVER_PORT=8080
 
 # ELECTRON ENV
 CALLBACK_DEEPLINK=mavis-sso://oauth2/callback
