@@ -1,7 +1,7 @@
 import React from 'react'
 
 const CLIENT_ID = process.env.CLIENT_ID ?? ''
-const SSO_AUTHORIZATION_ENDPOINT = process.env.SSO_AUTHORIZATION_ENDPOINT ?? ''
+const SSO_AUTHORIZATION_ENDPOINT = process.env.SSO_AUTHORIZATION_ENDPOINT ?? 'https://api-gateway.skymavis.one/oauth2/auth'
 const CALLBACK_URL =
   process.env.CALLBACK_URL ?? 'http://localhost:3000/oauth2/callback'
 const SCOPE =

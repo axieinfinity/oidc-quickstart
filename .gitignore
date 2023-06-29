@@ -36,3 +36,9 @@ next-env.d.ts
 
 # Next.js build output
 .next
+
+# Extension
+dev
+
+# Electron
+out

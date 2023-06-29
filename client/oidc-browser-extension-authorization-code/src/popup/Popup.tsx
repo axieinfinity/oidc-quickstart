@@ -67,7 +67,7 @@ export const Popup = () => {
             }}
             onClick={requestLogin}
           >
-            {loading ? 'Loading ... ' : 'Continue with Sky Mavis SSO'}
+            {loading ? 'Loading... ' : 'Continue with Sky Mavis SSO'}
           </button>
         </>
       )}

@@ -15,7 +15,7 @@ namespace Scenes
 		public GameObject loginPage;
 		public Text txtResponse;
 
-		public string CLIENT_ID = "2cae5412-1ff5-4081-b51c-20a7ac319374";
+		public string CLIENT_ID = "<your_client_id>";
 		public string SCOPE = "openid offline";
 		public string REDIRECT_URI = "demologin://platform";
 		public string SSO_AUTHORIZATION_ENDPOINT = "https://api-gateway.skymavis.one/oauth2/auth";

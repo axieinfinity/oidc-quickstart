@@ -1,33 +1,47 @@
+import axios from 'axios'
+
 export async function onLoad(container) {
   const code = new URL(location.href).searchParams.get('code') || ''
-  if (code) {
-    const { data } = await axios({
-      baseURL: SERVER_ENDPOINT,
-      url: SERVER_TOKEN_ENDPOINT,
-      method: 'POST',
-      data: {
-        code,
-        redirect_uri: CALLBACK_URL,
-      },
-    })
 
-    const wrapper = document.createElement('div')
-    wrapper.innerHTML = `
-        <h2>Token Response</h2>
-        <p>
-          ${JSON.stringify(data, null, 2)}
-        </p>
-    `
-    container.appendChild(wrapper)
-    return
+  if (code) {
+    try {
+      const { data } = await axios({
+        url: SERVER_TOKEN_ENDPOINT,
+        method: 'POST',
+        data: {
+          code,
+          redirect_uri: CALLBACK_URL,
+        },
+      })
+
+      const wrapper = document.createElement('div')
+      wrapper.innerHTML = `
+      <h2>Successful!</h2>
+      <pre>
+        ${JSON.stringify(data, null, 2)}
+      </pre>
+  `
+      container.appendChild(wrapper)
+      return
+    } catch (e) {
+      const wrapper = document.createElement('div')
+      wrapper.innerHTML = `
+      <h2>Failed!</h2>
+      <pre>
+        ${JSON.stringify(e, null, 2)}
+      </pre>
+  `
+      container.appendChild(wrapper)
+      return
+    }
   }
 
   const query = new URLSearchParams({
     state: crypto.randomUUID(),
-    client_id: CLIENT_ID,
     response_type: 'code',
-    scope: SCOPE,
     remember: 'false',
+    client_id: CLIENT_ID,
+    scope: SCOPE,
     redirect_uri: CALLBACK_URL,
   })
 

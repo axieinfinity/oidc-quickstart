@@ -6,7 +6,9 @@ import { CaptchaLoadFailError, useBindCaptcha } from '@axieinfinity/captcha'
 import MFAModal, { MFAMode } from './_MFAModal'
 import axios, { AxiosError, isAxiosError } from 'axios'
 
-const GEETEST_ENDPOINT = process.env.GEETEST_ENDPOINT
+const GEETEST_ENDPOINT =
+  process.env.GEETEST_ENDPOINT ??
+  'https://captcha.skymavis.one/api/geetest/register'
 const SERVER_ROPC_TOKEN_ENDPOINT =
   process.env.SERVER_ROPC_TOKEN_ENDPOINT ??
   'http://localhost:8080/oauth2/ropc/mfa'

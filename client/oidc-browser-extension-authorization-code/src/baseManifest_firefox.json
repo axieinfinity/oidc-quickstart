@@ -2,7 +2,7 @@
   "name": "__MSG_appName__",
   "author": "WebDEV",
   "manifest_version": 3,
-  "version": "3.0",
+  "version": "1.0",
   "description": "__MSG_appDescription__",
   "action": {
     "default_popup": "./popup/index.html",
@@ -17,14 +17,25 @@
   "default_locale": "en",
   "content_scripts": [
     {
-      "matches": ["http://*/*", "https://*/*"],
-      "js": ["content/content.js"]
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/content.js"
+      ]
     }
   ],
   "background": {
-    "scripts": ["background/background.js"]
+    "scripts": [
+      "background/background.js"
+    ]
   },
-  "permissions": ["tabs", "storage", "identity"],
+  "permissions": [
+    "tabs",
+    "storage",
+    "identity"
+  ],
   "browser_specific_settings": {
     "gecko": {
       "strict_min_version": "54.0a1"

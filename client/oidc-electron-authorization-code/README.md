@@ -8,5 +8,10 @@ Your app must be allowlisted to access the OAuth 2.0 APIs. Follow the steps in t
 
 ### Run & Deploy
 
-1. Run: `pnpm install`
-2. Run: `pnpm dev`
+1. Add redirect uri
+
+- Access <https://developers.skymavis.one/console/account-service/>
+- Add your callback uri, default: `mavis-sso://oauth2/callback`
+
+2. Run: `pnpm install`
+3. Run: `pnpm dev`
