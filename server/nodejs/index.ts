@@ -7,8 +7,14 @@ const PORT = Number(process.env.SERVER_PORT) ?? 8080
 const CLIENT_ID = process.env.CLIENT_ID ?? ''
 const API_KEY = process.env.API_KEY ?? ''
 const CLIENT_SECRET = process.env.CLIENT_SECRET ?? ''
-const SSO_ENDPOINT =
-  process.env.SSO_ENDPOINT ?? 'https://api-gateway.skymavis.one'
+
+const SSO_TOKEN_ENDPOINT =
+  process.env.SSO_TOKEN_ENDPOINT ??
+  'https://api-gateway.skymavis.one/account/oauth2/token'
+const SSO_USERINFO_ENDPOINT =
+  process.env.SSO_USERINFO_ENDPOINT ??
+  'https://api-gateway.skymavis.one/account/userinfo'
+const SCOPE = process.env.SCOPE ?? 'openid offline'
 
 const app = Fastify()
 
@@ -78,8 +84,7 @@ app.post(
     }
 
     const { data } = await axios({
-      baseURL: SSO_ENDPOINT,
-      url: `/account/oauth2/token`,
+      url: SSO_TOKEN_ENDPOINT,
       method: 'POST',
       headers,
       data: body,
@@ -123,8 +128,7 @@ app.post(
     }
 
     const { data } = await axios({
-      baseURL: SSO_ENDPOINT,
-      url: `/account/oauth2/token`,
+      url: SSO_TOKEN_ENDPOINT,
       method: 'POST',
       headers,
       data: body,
@@ -159,8 +163,7 @@ app.post(
     const { email: username, password, captcha } = req.body
 
     const { data } = await axios({
-      baseURL: SSO_ENDPOINT,
-      url: 'account/oauth2/token',
+      url: SSO_TOKEN_ENDPOINT,
       method: 'POST',
       headers: {
         'content-type': 'application/x-www-form-urlencoded',
@@ -172,8 +175,8 @@ app.post(
         password,
         client_id: CLIENT_ID,
         client_secret: CLIENT_SECRET,
+        scope: SCOPE,
         grant_type: 'password',
-        scope: 'openid offline',
       },
     })
 
@@ -194,8 +197,7 @@ app.post(
     const { code, MFAtoken } = req.body
 
     const { data } = await axios({
-      baseURL: SSO_ENDPOINT,
-      url: 'account/oauth2/token',
+      url: SSO_TOKEN_ENDPOINT,
       method: 'POST',
       headers: {
         'content-type': 'application/x-www-form-urlencoded',
@@ -230,8 +232,7 @@ app.post(
     const { message, signature } = req.body
 
     const { data } = await axios({
-      baseURL: SSO_ENDPOINT,
-      url: `/account/oauth2/token`,
+      url: SSO_TOKEN_ENDPOINT,
       method: 'POST',
       headers: {
         'content-type': 'application/x-www-form-urlencoded',
@@ -242,8 +243,8 @@ app.post(
         signature,
         client_id: CLIENT_ID,
         client_secret: CLIENT_SECRET,
+        scope: SCOPE,
         grant_type: 'ronin',
-        scope: 'openid offline',
       },
     })
 
@@ -289,8 +290,7 @@ app.get('/oauth2/userinfo', async req => {
     authorization: `Bearer ${accessToken}`,
   }
   const { data } = await axios({
-    baseURL: SSO_ENDPOINT,
-    url: `account/userinfo`,
+    url: SSO_USERINFO_ENDPOINT,
     method: 'GET',
     headers,
   })
