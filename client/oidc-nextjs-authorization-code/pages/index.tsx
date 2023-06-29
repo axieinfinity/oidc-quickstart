@@ -4,8 +4,8 @@ const CLIENT_ID = process.env.CLIENT_ID ?? ''
 const SSO_AUTHORIZATION_ENDPOINT = process.env.SSO_AUTHORIZATION_ENDPOINT ?? ''
 const CALLBACK_URL =
   process.env.CALLBACK_URL ?? 'http://localhost:3000/oauth2/callback'
-const SSO_ENDPOINT =
-  process.env.SSO_ENDPOINT || 'https://api-gateway.skymavis.one'
+const SCOPE =
+  process.env.SCOPE ?? 'openid offline'
 
 export default function Home() {
   const requestLogin = () => {
@@ -14,7 +14,7 @@ export default function Home() {
       client_id: CLIENT_ID,
       redirect_uri: CALLBACK_URL,
       response_type: 'code',
-      scopes: 'openid',
+      scope: SCOPE,
     })
 
     window.open(`${SSO_AUTHORIZATION_ENDPOINT}?${query.toString()}`, '_self')

@@ -26,7 +26,7 @@ export async function onLoad(container) {
     state: crypto.randomUUID(),
     client_id: CLIENT_ID,
     response_type: 'code',
-    scopes: 'openid',
+    scope: SCOPE,
     remember: 'false',
     redirect_uri: CALLBACK_URL,
   })

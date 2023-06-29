@@ -9,6 +9,7 @@ const nextConfig = {
     SERVER_ENDPOINT: `http://localhost:${process.env.SERVER_PORT}`,
     SERVER_TOKEN_ENDPOINT: process.env.SERVER_TOKEN_ENDPOINT,
     CLIENT_ID: process.env.CLIENT_ID,
+    SCOPE: process.env.SCOPE,
   },
 }
 
