@@ -283,12 +283,10 @@ app.get(
 
 /* ----------- Get User Information ----------- */
 app.get('/oauth2/userinfo', async req => {
-  const accessToken = req.headers['authorization']
-
+  const bearerToken = req.headers['authorization']
   const headers: Record<string, string> = {
-    'content-type': 'application/x-www-form-urlencoded',
     'x-api-key': OIDC_API_KEY,
-    authorization: `Bearer ${accessToken}`,
+    authorization: `${bearerToken}`,
   }
   const { data } = await axios({
     url: OIDC_SSO_USERINFO_ENDPOINT,
