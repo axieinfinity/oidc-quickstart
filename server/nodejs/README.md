@@ -18,8 +18,8 @@ OIDC_API_KEY=<your_api_key>
 OIDC_SCOPE="openid offline"
 
 # OIDC ENDPOINTS
-OIDC_SSO_TOKEN_ENDPOINT=https://api-gateway.skymavis.one/account/oauth2/token
-OIDC_SSO_USERINFO_ENDPOINT=https://api-gateway.skymavis.one/account/userinfo
+OIDC_TOKEN_ENDPOINT=https://api-gateway.skymavis.one/account/oauth2/token
+OIDC_USERINFO_ENDPOINT=https://api-gateway.skymavis.one/account/userinfo
 ```
 
 2. Run: `pnpm install`

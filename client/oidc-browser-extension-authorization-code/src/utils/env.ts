@@ -1,5 +1,5 @@
-export const OIDC_SSO_AUTHORIZATION_ENDPOINT =
-  process.env.OIDC_SSO_AUTHORIZATION_ENDPOINT ??
+export const OIDC_AUTHORIZATION_ENDPOINT =
+  process.env.OIDC_AUTHORIZATION_ENDPOINT ??
   'https://api-gateway.skymavis.one/oauth2/auth'
 export const SERVER_TOKEN_ENDPOINT =
   process.env.SERVER_TOKEN_ENDPOINT ??

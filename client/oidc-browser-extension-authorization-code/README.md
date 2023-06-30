@@ -18,7 +18,7 @@ OIDC_SCOPE="openid offline"
 
 
 # AUTHORIZATION ENDPOINT
-OIDC_SSO_AUTHORIZATION_ENDPOINT=https://api-gateway.skymavis.one/oauth2/auth
+OIDC_AUTHORIZATION_ENDPOINT=https://api-gateway.skymavis.one/oauth2/auth
 
 # SERVER ENDPOINTS
 SERVER_TOKEN_ENDPOINT=http://localhost:8080/oauth2/authorization-code/token

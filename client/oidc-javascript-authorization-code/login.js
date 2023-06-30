@@ -45,7 +45,7 @@ export async function onLoad(container) {
     redirect_uri: OIDC_CALLBACK_URL,
   })
 
-  const url = `${OIDC_SSO_AUTHORIZATION_ENDPOINT}?${query.toString()}`
+  const url = `${OIDC_AUTHORIZATION_ENDPOINT}?${query.toString()}`
 
   const loginButton = document.createElement('button')
   loginButton.setAttribute('type', 'button')

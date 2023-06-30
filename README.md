@@ -33,10 +33,10 @@ OIDC_CALLBACK_URL=http://localhost:3000/oauth2/callback
 
 # OIDC ENDPOINTS
 
-OIDC_SSO_AUTHORIZATION_ENDPOINT=https://api-gateway.skymavis.one/oauth2/auth
-OIDC_SSO_TOKEN_ENDPOINT=https://api-gateway.skymavis.one/account/oauth2/token
-OIDC_SSO_USERINFO_ENDPOINT=https://api-gateway.skymavis.one/account/userinfo
-OIDC_SSO_JWKS_ENDPOINT=https://api-gateway.skymavis.one/account/.well-known/jwks.json
+OIDC_AUTHORIZATION_ENDPOINT=https://api-gateway.skymavis.one/oauth2/auth
+OIDC_TOKEN_ENDPOINT=https://api-gateway.skymavis.one/account/oauth2/token
+OIDC_USERINFO_ENDPOINT=https://api-gateway.skymavis.one/account/userinfo
+OIDC_JWKS_ENDPOINT=https://api-gateway.skymavis.one/account/.well-known/jwks.json
 
 # SERVER ENDPOINTS
 

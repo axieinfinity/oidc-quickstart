@@ -16,7 +16,7 @@ OIDC_CALLBACK_URL=http://localhost:3000/oauth2/callback
 
 
 # AUTHORIZATION ENDPOINT
-OIDC_SSO_AUTHORIZATION_ENDPOINT=https://api-gateway.skymavis.one/oauth2/auth
+OIDC_AUTHORIZATION_ENDPOINT=https://api-gateway.skymavis.one/oauth2/auth
 ```
 
 2. Run: `pnpm install`

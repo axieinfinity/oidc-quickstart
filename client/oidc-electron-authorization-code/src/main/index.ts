@@ -11,8 +11,8 @@ const SERVER_TOKEN_ENDPOINT =
   'http://localhost:8080/oauth2/authorization-code/token'
 const CALLBACK_DEEPLINK =
   process.env.CALLBACK_DEEPLINK ?? 'mavis-sso://oauth2/callback'
-const OIDC_SSO_AUTHORIZATION_ENDPOINT =
-  process.env.OIDC_SSO_AUTHORIZATION_ENDPOINT ||
+const OIDC_AUTHORIZATION_ENDPOINT =
+  process.env.OIDC_AUTHORIZATION_ENDPOINT ||
   'https://api-gateway.skymavis.one/account/oauth2/auth'
 const OIDC_CLIENT_ID = process.env.OIDC_CLIENT_ID ?? ''
 const OIDC_SCOPE = process.env.OIDC_SCOPE ?? 'openid offline'
@@ -133,7 +133,7 @@ ipcMain.handle('request_login', async () => {
     redirect_uri: CALLBACK_DEEPLINK,
   })
 
-  shell.openExternal(`${OIDC_SSO_AUTHORIZATION_ENDPOINT}?${query.toString()}`)
+  shell.openExternal(`${OIDC_AUTHORIZATION_ENDPOINT}?${query.toString()}`)
 
   try {
     const callbackUrl = await urlPromise

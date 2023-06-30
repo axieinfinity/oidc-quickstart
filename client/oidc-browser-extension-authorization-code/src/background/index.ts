@@ -2,7 +2,7 @@ import {
   OIDC_CLIENT_ID,
   OIDC_SCOPE,
   SERVER_TOKEN_ENDPOINT,
-  OIDC_SSO_AUTHORIZATION_ENDPOINT,
+  OIDC_AUTHORIZATION_ENDPOINT,
 } from 'utils/env'
 import { runtime, tabs, Tabs, Runtime, storage } from 'webextension-polyfill'
 
@@ -80,7 +80,7 @@ class Background {
             redirect_uri,
           })
 
-          const url = `${OIDC_SSO_AUTHORIZATION_ENDPOINT}?${query.toString()}`
+          const url = `${OIDC_AUTHORIZATION_ENDPOINT}?${query.toString()}`
 
           browser.identity.launchWebAuthFlow(
             { url, interactive: true },

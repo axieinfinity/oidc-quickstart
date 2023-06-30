@@ -18,7 +18,7 @@ How to run
 ```csharp
 public string OIDC_CLIENT_ID = "<your_client_id>";
 public string REDIRECT_URI = "demologin://platform";
-public string OIDC_SSO_AUTHORIZATION_ENDPOINT = "https://api-gateway.skymavis.one/oauth2/auth";
+public string OIDC_AUTHORIZATION_ENDPOINT = "https://api-gateway.skymavis.one/oauth2/auth";
 public string SERVER_TOKEN_ENDPOINT = "http://localhost:8080/oauth2/authorization-code/token";
 ```
 

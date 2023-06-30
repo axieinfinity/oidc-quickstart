@@ -4,8 +4,8 @@ import React from 'react'
 const OIDC_CLIENT_ID = process.env.OIDC_CLIENT_ID ?? ''
 const OIDC_CALLBACK_URL =
   process.env.OIDC_CALLBACK_URL ?? 'http://localhost:3000/oauth2/callback'
-const OIDC_SSO_AUTHORIZATION_ENDPOINT =
-  process.env.OIDC_SSO_AUTHORIZATION_ENDPOINT ??
+const OIDC_AUTHORIZATION_ENDPOINT =
+  process.env.OIDC_AUTHORIZATION_ENDPOINT ??
   'https://api-gateway.skymavis.one/account/oauth2/auth'
 
 const OIDC_SCOPE = process.env.OIDC_SCOPE ?? ''
@@ -43,7 +43,7 @@ export default function Home() {
       code_challenge: codeChallenge,
     })
 
-    window.open(`${OIDC_SSO_AUTHORIZATION_ENDPOINT}?${query.toString()}`, '_self')
+    window.open(`${OIDC_AUTHORIZATION_ENDPOINT}?${query.toString()}`, '_self')
   }
 
   return (

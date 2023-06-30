@@ -10,11 +10,11 @@ const OIDC_CLIENT_SECRET = process.env.OIDC_CLIENT_SECRET ?? ''
 const OIDC_SCOPE = process.env.OIDC_SCOPE ?? 'openid offline'
 
 
-const OIDC_SSO_TOKEN_ENDPOINT =
-  process.env.OIDC_SSO_TOKEN_ENDPOINT ??
+const OIDC_TOKEN_ENDPOINT =
+  process.env.OIDC_TOKEN_ENDPOINT ??
   'https://api-gateway.skymavis.one/account/oauth2/token'
-const OIDC_SSO_USERINFO_ENDPOINT =
-  process.env.OIDC_SSO_USERINFO_ENDPOINT ??
+const OIDC_USERINFO_ENDPOINT =
+  process.env.OIDC_USERINFO_ENDPOINT ??
   'https://api-gateway.skymavis.one/account/userinfo'
 
 const app = Fastify()
@@ -85,7 +85,7 @@ app.post(
     }
 
     const { data } = await axios({
-      url: OIDC_SSO_TOKEN_ENDPOINT,
+      url: OIDC_TOKEN_ENDPOINT,
       method: 'POST',
       headers,
       data: body,
@@ -129,7 +129,7 @@ app.post(
     }
 
     const { data } = await axios({
-      url: OIDC_SSO_TOKEN_ENDPOINT,
+      url: OIDC_TOKEN_ENDPOINT,
       method: 'POST',
       headers,
       data: body,
@@ -164,7 +164,7 @@ app.post(
     const { email: username, password, captcha } = req.body
 
     const { data } = await axios({
-      url: OIDC_SSO_TOKEN_ENDPOINT,
+      url: OIDC_TOKEN_ENDPOINT,
       method: 'POST',
       headers: {
         'content-type': 'application/x-www-form-urlencoded',
@@ -198,7 +198,7 @@ app.post(
     const { code, MFAtoken } = req.body
 
     const { data } = await axios({
-      url: OIDC_SSO_TOKEN_ENDPOINT,
+      url: OIDC_TOKEN_ENDPOINT,
       method: 'POST',
       headers: {
         'content-type': 'application/x-www-form-urlencoded',
@@ -233,7 +233,7 @@ app.post(
     const { message, signature } = req.body
 
     const { data } = await axios({
-      url: OIDC_SSO_TOKEN_ENDPOINT,
+      url: OIDC_TOKEN_ENDPOINT,
       method: 'POST',
       headers: {
         'content-type': 'application/x-www-form-urlencoded',
@@ -289,7 +289,7 @@ app.get('/oauth2/userinfo', async req => {
     authorization: `${bearerToken}`,
   }
   const { data } = await axios({
-    url: OIDC_SSO_USERINFO_ENDPOINT,
+    url: OIDC_USERINFO_ENDPOINT,
     method: 'GET',
     headers,
   })
