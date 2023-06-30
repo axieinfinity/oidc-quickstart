@@ -8,17 +8,17 @@ Your app must be allowlisted to access the OAuth 2.0 APIs. Follow the steps in t
 
 ### Run & Deploy
 
-1. Create a `.env` file. Check out file `.env.example`:
+1. Create a `.env` file follows file `.env.example`:
 
 ```
-## OIDC ENV
+# OIDC ENV
 OIDC_CLIENT_ID=<your_client_id>
 OIDC_CALLBACK_URL=http://localhost:3000/oauth2/callback
 OIDC_SCOPE="openid offline"
 
 
 # AUTHORIZATION ENDPOINT
-OIDC_AUTHORIZATION_ENDPOINT=https://api-gateway.skymavis.one/oauth2/auth
+OIDC_AUTHORIZATION_ENDPOINT=https://api-gateway.skymavis.com/oauth2/auth
 
 # SERVER ENDPOINTS
 SERVER_TOKEN_ENDPOINT=http://localhost:8080/oauth2/authorization-code/token
@@ -42,5 +42,5 @@ SERVER_TOKEN_ENDPOINT=http://localhost:8080/oauth2/authorization-code/token
 5. Add redirect uri
 
 - Get uri: Right click on popup extension --> Inspect --> Console -->  Copy `SIGN IN REDIRECT URI` (Note: include '/')
-- Access <https://developers.skymavis.one/console/account-service/>
+- Access <https://developers.skymavis.com/console/account-service/>
 - Add `SIGN IN REDIRECT URI`

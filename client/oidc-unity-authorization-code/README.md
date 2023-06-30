@@ -10,7 +10,7 @@ How to run
 
 1. Add redirect uri
 
-- Access <https://developers.skymavis.one/console/account-service/>
+- Access <https://developers.skymavis.com/console/account-service/>
 - Add your callback uri, default: `demologin://platform`
 
 2. Open `Unity/Assets/Scripts/LoginController.cs` and replace the values.
@@ -18,7 +18,7 @@ How to run
 ```csharp
 public string OIDC_CLIENT_ID = "<your_client_id>";
 public string REDIRECT_URI = "demologin://platform";
-public string OIDC_AUTHORIZATION_ENDPOINT = "https://api-gateway.skymavis.one/oauth2/auth";
+public string OIDC_AUTHORIZATION_ENDPOINT = "https://api-gateway.skymavis.com/oauth2/auth";
 public string SERVER_TOKEN_ENDPOINT = "http://localhost:8080/oauth2/authorization-code/token";
 ```
 

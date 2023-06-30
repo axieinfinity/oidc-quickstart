@@ -5,17 +5,17 @@ import axios, { AxiosError, isAxiosError } from 'axios'
 
 const PORT = Number(process.env.SERVER_PORT) ?? 8080
 const OIDC_CLIENT_ID = process.env.OIDC_CLIENT_ID ?? ''
-const OIDC_API_KEY = process.env.OIDC_API_KEY ?? ''
+const API_KEY = process.env.API_KEY ?? ''
 const OIDC_CLIENT_SECRET = process.env.OIDC_CLIENT_SECRET ?? ''
 const OIDC_SCOPE = process.env.OIDC_SCOPE ?? 'openid offline'
 
 
 const OIDC_TOKEN_ENDPOINT =
   process.env.OIDC_TOKEN_ENDPOINT ??
-  'https://api-gateway.skymavis.one/account/oauth2/token'
+  'https://api-gateway.skymavis.com/account/oauth2/token'
 const OIDC_USERINFO_ENDPOINT =
   process.env.OIDC_USERINFO_ENDPOINT ??
-  'https://api-gateway.skymavis.one/account/userinfo'
+  'https://api-gateway.skymavis.com/account/userinfo'
 
 const app = Fastify()
 
@@ -61,7 +61,7 @@ app.post(
 
     const headers: Record<string, string> = {
       'content-type': 'application/x-www-form-urlencoded',
-      'x-api-key': OIDC_API_KEY,
+      'x-api-key': API_KEY,
     }
 
     const body: Record<string, string> = {
@@ -110,7 +110,7 @@ app.post(
 
     const headers: Record<string, string> = {
       'content-type': 'application/x-www-form-urlencoded',
-      'x-api-key': OIDC_API_KEY,
+      'x-api-key': API_KEY,
     }
 
     const body: Record<string, string> = {
@@ -168,7 +168,7 @@ app.post(
       method: 'POST',
       headers: {
         'content-type': 'application/x-www-form-urlencoded',
-        'x-api-key': OIDC_API_KEY,
+        'x-api-key': API_KEY,
         'x-captcha': JSON.stringify(captcha),
       },
       data: {
@@ -202,7 +202,7 @@ app.post(
       method: 'POST',
       headers: {
         'content-type': 'application/x-www-form-urlencoded',
-        'x-api-key': OIDC_API_KEY,
+        'x-api-key': API_KEY,
       },
       data: {
         grant_type: 'mfa-otp',
@@ -237,7 +237,7 @@ app.post(
       method: 'POST',
       headers: {
         'content-type': 'application/x-www-form-urlencoded',
-        'x-api-key': OIDC_API_KEY,
+        'x-api-key': API_KEY,
       },
       data: {
         message,
@@ -270,7 +270,7 @@ app.get(
     const { address } = req.query
 
     const { data } = await axios({
-      baseURL: 'https://athena.skymavis.one/',
+      baseURL: 'https://athena.skymavis.com/',
       url: 'v2/public/auth/ronin/fetch-nonce',
       params: {
         address,
@@ -285,7 +285,7 @@ app.get(
 app.get('/oauth2/userinfo', async req => {
   const bearerToken = req.headers['authorization']
   const headers: Record<string, string> = {
-    'x-api-key': OIDC_API_KEY,
+    'x-api-key': API_KEY,
     authorization: `${bearerToken}`,
   }
   const { data } = await axios({

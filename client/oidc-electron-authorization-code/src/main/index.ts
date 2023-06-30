@@ -7,13 +7,13 @@ import crypto from 'crypto'
 import axios from 'axios'
 
 const SERVER_TOKEN_ENDPOINT =
-  process.env.SERVER_TOKEN_ENDPOINT ??
-  'http://localhost:8080/oauth2/authorization-code/token'
+process.env.SERVER_TOKEN_ENDPOINT ??
+'http://localhost:8080/oauth2/authorization-code/token'
 const CALLBACK_DEEPLINK =
-  process.env.CALLBACK_DEEPLINK ?? 'mavis-sso://oauth2/callback'
+process.env.CALLBACK_DEEPLINK ?? 'mavis-electron-app://oauth2/callback'
 const OIDC_AUTHORIZATION_ENDPOINT =
-  process.env.OIDC_AUTHORIZATION_ENDPOINT ||
-  'https://api-gateway.skymavis.one/account/oauth2/auth'
+process.env.OIDC_AUTHORIZATION_ENDPOINT ||
+'https://api-gateway.skymavis.com/account/oauth2/auth'
 const OIDC_CLIENT_ID = process.env.OIDC_CLIENT_ID ?? ''
 const OIDC_SCOPE = process.env.OIDC_SCOPE ?? 'openid offline'
 
@@ -21,12 +21,12 @@ const gotTheLock = app.requestSingleInstanceLock()
 
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
-    app.setAsDefaultProtocolClient('mavis-sso', process.execPath, [
+    app.setAsDefaultProtocolClient('mavis-electron-app', process.execPath, [
       path.resolve(process.argv[1]),
     ])
   }
 } else {
-  app.setAsDefaultProtocolClient('mavis-sso')
+  app.setAsDefaultProtocolClient('mavis-electron-app')
 }
 
 let mainWindow
@@ -43,16 +43,16 @@ function createWindow(): void {
       sandbox: false,
     },
   })
-
+  
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
-
+  
   mainWindow.webContents.setWindowOpenHandler(details => {
     shell.openExternal(details.url)
     return { action: 'deny' }
   })
-
+  
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
@@ -68,16 +68,16 @@ function createWindow(): void {
 app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
-
+  
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
   // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
-
+  
   createWindow()
-
+  
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
@@ -132,21 +132,21 @@ ipcMain.handle('request_login', async () => {
     remember: 'false',
     redirect_uri: CALLBACK_DEEPLINK,
   })
-
+  
   shell.openExternal(`${OIDC_AUTHORIZATION_ENDPOINT}?${query.toString()}`)
-
+  
   try {
     const callbackUrl = await urlPromise
     const code = new URL(callbackUrl).searchParams.get('code')
-
+    
     if (!code) {
       dialog.showErrorBox('Error', 'Code not found!')
-
+      
       return {
         token: null,
       }
     }
-
+    
     const { data } = await axios({
       url: SERVER_TOKEN_ENDPOINT,
       method: 'POST',
@@ -155,13 +155,13 @@ ipcMain.handle('request_login', async () => {
         redirect_uri: CALLBACK_DEEPLINK,
       },
     })
-
+    
     return {
       token: data,
     }
   } catch (error) {
     dialog.showErrorBox('Error', 'Something went wrong!')
-
+    
     return {
       token: null,
     }

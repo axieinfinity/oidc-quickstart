@@ -15,7 +15,7 @@ const WC_SUPPORTED_CHAIN_IDS = [2020, 2021, 2022]
 const WC_RPC_MAP = {
   2020: 'https://api.roninchain.com/rpc',
   2021: 'https://saigon-testnet.roninchain.com/rpc',
-  2022: 'https://hcm-devnet.skymavis.one/rpc',
+  2022: 'https://hcm-devnet.skymavis.com/rpc',
 }
 const WC_SUPPORTED_METHODS = [
   'eth_accounts',

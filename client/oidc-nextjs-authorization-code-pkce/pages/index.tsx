@@ -6,7 +6,7 @@ const OIDC_CALLBACK_URL =
   process.env.OIDC_CALLBACK_URL ?? 'http://localhost:3000/oauth2/callback'
 const OIDC_AUTHORIZATION_ENDPOINT =
   process.env.OIDC_AUTHORIZATION_ENDPOINT ??
-  'https://api-gateway.skymavis.one/account/oauth2/auth'
+  'https://api-gateway.skymavis.com/account/oauth2/auth'
 
 const OIDC_SCOPE = process.env.OIDC_SCOPE ?? ''
 

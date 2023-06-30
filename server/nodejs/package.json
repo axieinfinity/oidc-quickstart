@@ -1,5 +1,5 @@
 {
-  "name": "skymavis-sso-fastify",
+  "name": "skymavis-electron-app-fastify",
   "version": "1.0.0",
   "main": "build/index.js",
   "scripts": {
