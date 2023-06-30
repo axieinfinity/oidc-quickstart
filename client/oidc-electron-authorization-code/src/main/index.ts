@@ -1,4 +1,4 @@
-require('dotenv').config({ path: '../../.env' })
+require('dotenv').config()
 import 'isomorphic-fetch'
 import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import path, { join } from 'path'
@@ -11,11 +11,11 @@ const SERVER_TOKEN_ENDPOINT =
   'http://localhost:8080/oauth2/authorization-code/token'
 const CALLBACK_DEEPLINK =
   process.env.CALLBACK_DEEPLINK ?? 'mavis-sso://oauth2/callback'
-const SSO_AUTHORIZATION_ENDPOINT =
-  process.env.SSO_AUTHORIZATION_ENDPOINT ||
+const OIDC_SSO_AUTHORIZATION_ENDPOINT =
+  process.env.OIDC_SSO_AUTHORIZATION_ENDPOINT ||
   'https://api-gateway.skymavis.one/account/oauth2/auth'
-const CLIENT_ID = process.env.CLIENT_ID ?? ''
-const SCOPE = process.env.SCOPE ?? 'openid offline'
+const OIDC_CLIENT_ID = process.env.OIDC_CLIENT_ID ?? ''
+const OIDC_SCOPE = process.env.OIDC_SCOPE ?? 'openid offline'
 
 const gotTheLock = app.requestSingleInstanceLock()
 
@@ -126,14 +126,14 @@ app.on('open-url', (_, url) => {
 ipcMain.handle('request_login', async () => {
   const query = new URLSearchParams({
     state: crypto.randomUUID(),
-    client_id: CLIENT_ID,
+    client_id: OIDC_CLIENT_ID,
     response_type: 'code',
-    scope: SCOPE,
+    scope: OIDC_SCOPE,
     remember: 'false',
     redirect_uri: CALLBACK_DEEPLINK,
   })
 
-  shell.openExternal(`${SSO_AUTHORIZATION_ENDPOINT}?${query.toString()}`)
+  shell.openExternal(`${OIDC_SSO_AUTHORIZATION_ENDPOINT}?${query.toString()}`)
 
   try {
     const callbackUrl = await urlPromise

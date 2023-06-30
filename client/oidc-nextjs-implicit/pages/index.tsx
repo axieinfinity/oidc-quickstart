@@ -1,22 +1,22 @@
 import React from 'react'
 
-const CLIENT_ID = process.env.CLIENT_ID ?? ''
-const SCOPE = process.env.SCOPE ?? 'openid offline'
-const SSO_AUTHORIZATION_ENDPOINT = process.env.SSO_AUTHORIZATION_ENDPOINT ?? ''
-const CALLBACK_URL =
-  process.env.CALLBACK_URL ?? 'http://localhost:3000/oauth2/callback'
+const OIDC_CLIENT_ID = process.env.OIDC_CLIENT_ID ?? ''
+const OIDC_SCOPE = process.env.OIDC_SCOPE ?? 'openid offline'
+const OIDC_SSO_AUTHORIZATION_ENDPOINT = process.env.OIDC_SSO_AUTHORIZATION_ENDPOINT ?? ''
+const OIDC_CALLBACK_URL =
+  process.env.OIDC_CALLBACK_URL ?? 'http://localhost:3000/oauth2/callback'
 
 export default function Home() {
   const requestLogin = () => {
     const query = new URLSearchParams({
       state: crypto.randomUUID(),
-      client_id: CLIENT_ID,
-      redirect_uri: CALLBACK_URL,
+      client_id: OIDC_CLIENT_ID,
+      redirect_uri: OIDC_CALLBACK_URL,
       response_type: 'token',
-      scope: SCOPE,
+      scope: OIDC_SCOPE,
     })
 
-    window.open(`${SSO_AUTHORIZATION_ENDPOINT}?${query.toString()}`, '_self')
+    window.open(`${OIDC_SSO_AUTHORIZATION_ENDPOINT}?${query.toString()}`, '_self')
   }
 
   return (

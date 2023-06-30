@@ -1,20 +1,21 @@
-require('dotenv').config({ path: '../../.env' })
+require('dotenv').config()
 import Fastify, { FastifyRequest } from 'fastify'
 import cors from '@fastify/cors'
 import axios, { AxiosError, isAxiosError } from 'axios'
 
 const PORT = Number(process.env.SERVER_PORT) ?? 8080
-const CLIENT_ID = process.env.CLIENT_ID ?? ''
-const API_KEY = process.env.API_KEY ?? ''
-const CLIENT_SECRET = process.env.CLIENT_SECRET ?? ''
+const OIDC_CLIENT_ID = process.env.OIDC_CLIENT_ID ?? ''
+const OIDC_API_KEY = process.env.OIDC_API_KEY ?? ''
+const OIDC_CLIENT_SECRET = process.env.OIDC_CLIENT_SECRET ?? ''
+const OIDC_SCOPE = process.env.OIDC_SCOPE ?? 'openid offline'
 
-const SSO_TOKEN_ENDPOINT =
-  process.env.SSO_TOKEN_ENDPOINT ??
+
+const OIDC_SSO_TOKEN_ENDPOINT =
+  process.env.OIDC_SSO_TOKEN_ENDPOINT ??
   'https://api-gateway.skymavis.one/account/oauth2/token'
-const SSO_USERINFO_ENDPOINT =
-  process.env.SSO_USERINFO_ENDPOINT ??
+const OIDC_SSO_USERINFO_ENDPOINT =
+  process.env.OIDC_SSO_USERINFO_ENDPOINT ??
   'https://api-gateway.skymavis.one/account/userinfo'
-const SCOPE = process.env.SCOPE ?? 'openid offline'
 
 const app = Fastify()
 
@@ -60,7 +61,7 @@ app.post(
 
     const headers: Record<string, string> = {
       'content-type': 'application/x-www-form-urlencoded',
-      'x-api-key': API_KEY,
+      'x-api-key': OIDC_API_KEY,
     }
 
     const body: Record<string, string> = {
@@ -71,12 +72,12 @@ app.post(
 
     switch (authorization_method) {
       case 'client_secret_basic':
-        headers.Authorization = `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`
+        headers.Authorization = `Basic ${btoa(`${OIDC_CLIENT_ID}:${OIDC_CLIENT_SECRET}`)}`
         headers.token_endpoint_auth_method = authorization_method
         break
       default:
-        body.client_id = CLIENT_ID
-        body.client_secret = CLIENT_SECRET
+        body.client_id = OIDC_CLIENT_ID
+        body.client_secret = OIDC_CLIENT_SECRET
     }
 
     if (code_verifier) {
@@ -84,7 +85,7 @@ app.post(
     }
 
     const { data } = await axios({
-      url: SSO_TOKEN_ENDPOINT,
+      url: OIDC_SSO_TOKEN_ENDPOINT,
       method: 'POST',
       headers,
       data: body,
@@ -109,7 +110,7 @@ app.post(
 
     const headers: Record<string, string> = {
       'content-type': 'application/x-www-form-urlencoded',
-      'x-api-key': API_KEY,
+      'x-api-key': OIDC_API_KEY,
     }
 
     const body: Record<string, string> = {
@@ -119,16 +120,16 @@ app.post(
 
     switch (authorization_method) {
       case 'client_secret_basic':
-        headers.Authorization = `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`
+        headers.Authorization = `Basic ${btoa(`${OIDC_CLIENT_ID}:${OIDC_CLIENT_SECRET}`)}`
         headers.token_endpoint_auth_method = authorization_method
         break
       default:
-        body.client_id = CLIENT_ID
-        body.client_secret = CLIENT_SECRET
+        body.client_id = OIDC_CLIENT_ID
+        body.client_secret = OIDC_CLIENT_SECRET
     }
 
     const { data } = await axios({
-      url: SSO_TOKEN_ENDPOINT,
+      url: OIDC_SSO_TOKEN_ENDPOINT,
       method: 'POST',
       headers,
       data: body,
@@ -163,19 +164,19 @@ app.post(
     const { email: username, password, captcha } = req.body
 
     const { data } = await axios({
-      url: SSO_TOKEN_ENDPOINT,
+      url: OIDC_SSO_TOKEN_ENDPOINT,
       method: 'POST',
       headers: {
         'content-type': 'application/x-www-form-urlencoded',
-        'x-api-key': API_KEY,
+        'x-api-key': OIDC_API_KEY,
         'x-captcha': JSON.stringify(captcha),
       },
       data: {
         username,
         password,
-        client_id: CLIENT_ID,
-        client_secret: CLIENT_SECRET,
-        scope: SCOPE,
+        client_id: OIDC_CLIENT_ID,
+        client_secret: OIDC_CLIENT_SECRET,
+        scope: OIDC_SCOPE,
         grant_type: 'password',
       },
     })
@@ -197,18 +198,18 @@ app.post(
     const { code, MFAtoken } = req.body
 
     const { data } = await axios({
-      url: SSO_TOKEN_ENDPOINT,
+      url: OIDC_SSO_TOKEN_ENDPOINT,
       method: 'POST',
       headers: {
         'content-type': 'application/x-www-form-urlencoded',
-        'x-api-key': API_KEY,
+        'x-api-key': OIDC_API_KEY,
       },
       data: {
         grant_type: 'mfa-otp',
         otp: code,
         mfa_token: MFAtoken,
-        client_id: CLIENT_ID,
-        client_secret: CLIENT_SECRET,
+        client_id: OIDC_CLIENT_ID,
+        client_secret: OIDC_CLIENT_SECRET,
       },
     })
 
@@ -232,18 +233,18 @@ app.post(
     const { message, signature } = req.body
 
     const { data } = await axios({
-      url: SSO_TOKEN_ENDPOINT,
+      url: OIDC_SSO_TOKEN_ENDPOINT,
       method: 'POST',
       headers: {
         'content-type': 'application/x-www-form-urlencoded',
-        'x-api-key': API_KEY,
+        'x-api-key': OIDC_API_KEY,
       },
       data: {
         message,
         signature,
-        client_id: CLIENT_ID,
-        client_secret: CLIENT_SECRET,
-        scope: SCOPE,
+        client_id: OIDC_CLIENT_ID,
+        client_secret: OIDC_CLIENT_SECRET,
+        scope: OIDC_SCOPE,
         grant_type: 'ronin',
       },
     })
@@ -286,11 +287,11 @@ app.get('/oauth2/userinfo', async req => {
 
   const headers: Record<string, string> = {
     'content-type': 'application/x-www-form-urlencoded',
-    'x-api-key': API_KEY,
+    'x-api-key': OIDC_API_KEY,
     authorization: `Bearer ${accessToken}`,
   }
   const { data } = await axios({
-    url: SSO_USERINFO_ENDPOINT,
+    url: OIDC_SSO_USERINFO_ENDPOINT,
     method: 'GET',
     headers,
   })

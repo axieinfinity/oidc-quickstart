@@ -5,8 +5,8 @@ import { FC, useEffect, useState } from 'react'
 const SERVER_TOKEN_ENDPOINT =
   process.env.SERVER_TOKEN_ENDPOINT ??
   'http://localhost:8080/oauth2/authorization-code/token'
-const CALLBACK_URL =
-  process.env.CALLBACK_URL ?? 'http://localhost:3000/oauth2/callback'
+const OIDC_CALLBACK_URL =
+  process.env.OIDC_CALLBACK_URL ?? 'http://localhost:3000/oauth2/callback'
 
 const Callback = () => {
   const router = useRouter()
@@ -25,7 +25,7 @@ const Callback = () => {
         method: 'POST',
         data: {
           code,
-          redirect_uri: CALLBACK_URL,
+          redirect_uri: OIDC_CALLBACK_URL,
           code_verifier,
         },
       })

@@ -18,9 +18,7 @@ const baseManifest = {
   firefox: baseManifestFirefox,
 }
 
-// const dotenv = require('dotenv').config({ path: __dirname + '/.env' });
-
-const dotenv = require('dotenv').config({ path: '../../.env' })
+const dotenv = require('dotenv').config({ path: __dirname + '/.env' });
 
 interface EnvironmentConfig {
   NODE_ENV: string

@@ -1,8 +1,8 @@
 import {
-  CLIENT_ID,
-  SCOPE,
+  OIDC_CLIENT_ID,
+  OIDC_SCOPE,
   SERVER_TOKEN_ENDPOINT,
-  SSO_AUTHORIZATION_ENDPOINT,
+  OIDC_SSO_AUTHORIZATION_ENDPOINT,
 } from 'utils/env'
 import { runtime, tabs, Tabs, Runtime, storage } from 'webextension-polyfill'
 
@@ -73,14 +73,14 @@ class Background {
         case 'login': {
           const query = new URLSearchParams({
             state: crypto.randomUUID(),
-            client_id: CLIENT_ID,
+            client_id: OIDC_CLIENT_ID,
             response_type: 'code',
-            scope: SCOPE,
+            scope: OIDC_SCOPE,
             remember: 'false',
             redirect_uri,
           })
 
-          const url = `${SSO_AUTHORIZATION_ENDPOINT}?${query.toString()}`
+          const url = `${OIDC_SSO_AUTHORIZATION_ENDPOINT}?${query.toString()}`
 
           browser.identity.launchWebAuthFlow(
             { url, interactive: true },

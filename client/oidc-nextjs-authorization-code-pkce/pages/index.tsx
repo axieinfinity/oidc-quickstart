@@ -1,14 +1,14 @@
 import CryptoJS, { SHA256 } from 'crypto-js'
 import React from 'react'
 
-const CLIENT_ID = process.env.CLIENT_ID ?? ''
-const CALLBACK_URL =
-  process.env.CALLBACK_URL ?? 'http://localhost:3000/oauth2/callback'
-const SSO_AUTHORIZATION_ENDPOINT =
-  process.env.SSO_AUTHORIZATION_ENDPOINT ??
+const OIDC_CLIENT_ID = process.env.OIDC_CLIENT_ID ?? ''
+const OIDC_CALLBACK_URL =
+  process.env.OIDC_CALLBACK_URL ?? 'http://localhost:3000/oauth2/callback'
+const OIDC_SSO_AUTHORIZATION_ENDPOINT =
+  process.env.OIDC_SSO_AUTHORIZATION_ENDPOINT ??
   'https://api-gateway.skymavis.one/account/oauth2/auth'
 
-const SCOPE = process.env.SCOPE ?? ''
+const OIDC_SCOPE = process.env.OIDC_SCOPE ?? ''
 
 const generateRandomString = (length = 50) => {
   const characters =
@@ -35,15 +35,15 @@ export default function Home() {
 
     const query = new URLSearchParams({
       state: crypto.randomUUID(),
-      client_id: CLIENT_ID,
-      redirect_uri: CALLBACK_URL,
+      client_id: OIDC_CLIENT_ID,
+      redirect_uri: OIDC_CALLBACK_URL,
       response_type: 'code',
-      scope: SCOPE,
+      scope: OIDC_SCOPE,
       code_challenge_method: 'S256',
       code_challenge: codeChallenge,
     })
 
-    window.open(`${SSO_AUTHORIZATION_ENDPOINT}?${query.toString()}`, '_self')
+    window.open(`${OIDC_SSO_AUTHORIZATION_ENDPOINT}?${query.toString()}`, '_self')
   }
 
   return (
