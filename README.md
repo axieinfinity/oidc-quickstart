@@ -47,14 +47,21 @@ GEETEST_ENDPOINT=https://captcha.skymavis.one/api/geetest/register
 
 ## How to run
 
-1. Run Nodejs server:
+1. Setup Nodejs and pnpm:
+
+Remediation version:
+
+- Nodejs >= 16.17.0
+- pnpm >= 7.5.2
+
+2. Run Nodejs server:
 
 ```bash
 cd server/nodejs
 pnpm install && pnpm dev
 ```
 
-2. Go to your favorite sample, install packages and start:
+3. Go to your favorite sample, install packages and start:
 
 ```bash
 cd client/oidc-nextjs-ropc
