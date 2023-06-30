@@ -160,7 +160,6 @@ ipcMain.handle('request_login', async () => {
       token: data,
     }
   } catch (error) {
-    console.log('error', error)
     dialog.showErrorBox('Error', 'Something went wrong!')
 
     return {

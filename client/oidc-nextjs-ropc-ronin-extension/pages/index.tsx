@@ -1,38 +1,23 @@
 import React, { useRef, useState } from 'react'
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import QRCode from 'qrcode.react'
+import { EIP1193Event, EIP1193Provider, InitialData } from './types'
 import axios, { isAxiosError } from 'axios'
 
-export const SERVER_RONIN_NONCE_ENDPOINT =
+declare global {
+  interface Window {
+    ronin?: {
+      provider: EIP1193Provider
+      roninEvent: EventTarget
+    }
+  }
+}
+
+const SERVER_RONIN_NONCE_ENDPOINT =
   process.env.SERVER_RONIN_NONCE_ENDPOINT ??
   'http://localhost:8080/oauth2/ronin/fetch-nonce'
-export const SERVER_RONIN_TOKEN_ENDPOINT =
+const SERVER_RONIN_TOKEN_ENDPOINT =
   process.env.SERVER_RONIN_TOKEN_ENDPOINT ??
   'http://localhost:8080/oauth2/ronin/token'
-
-const WC_DEFAULT_PROJECT_ID = 'd2ef97836db7eb390bcb2c1e9847ecdc'
-const WC_SUPPORTED_CHAIN_IDS = [2020, 2021, 2022]
-const WC_RPC_MAP = {
-  2020: 'https://api.roninchain.com/rpc',
-  2021: 'https://saigon-testnet.roninchain.com/rpc',
-  2022: 'https://hcm-devnet.skymavis.one/rpc',
-}
-const WC_SUPPORTED_METHODS = [
-  'eth_accounts',
-  'eth_requestAccounts',
-  'eth_sendTransaction',
-  'eth_sign',
-  'personal_sign',
-  'eth_signTypedData',
-  'eth_signTypedData_v4',
-  'eth_getFreeGasRequests',
-  'wallet_initialData',
-]
-
-type InitialData = {
-  account: string
-  chainId: number
-}
 
 function generateSingingMessage({
   address,
@@ -67,64 +52,67 @@ Expiration Time: ${expirationTime}
 Not Before: ${notBefore}`
 }
 
+const setupEventListeners = (provider?: EIP1193Provider) => {
+  if (!provider) return
+
+  provider.on(EIP1193Event.CONNECT, () => {
+    provider.emit(EIP1193Event.CONNECT)
+  })
+
+  provider.on(EIP1193Event.DISCONNECT, (code?: string, reason?: string) => {
+    provider.emit(EIP1193Event.DISCONNECT, code, reason)
+  })
+
+  provider.on(EIP1193Event.ACCOUNTS_CHANGED, (accounts: string[]) => {
+    provider.emit(EIP1193Event.ACCOUNTS_CHANGED, accounts)
+  })
+
+  provider.on(EIP1193Event.CHAIN_CHANGED, (chainId: number) => {
+    provider.emit(EIP1193Event.CHAIN_CHANGED, chainId)
+  })
+}
+
 export default function Home() {
+  const providerRef = useRef<EIP1193Provider | null>(null)
   const [token, setToken] = useState(null)
-  const [error, setError] = useState(null)
-  const [uri, setUri] = React.useState('')
-  const providerRef = useRef<InstanceType<typeof EthereumProvider> | null>(null)
+  const [error, setError] = useState('')
 
-  const connectRoninWallet = async (): Promise<InitialData> => {
-    const provider = await EthereumProvider.init({
-      projectId: WC_DEFAULT_PROJECT_ID,
-      chains: WC_SUPPORTED_CHAIN_IDS,
-      rpcMap: WC_RPC_MAP,
-      methods: WC_SUPPORTED_METHODS,
-      metadata: {
-        name: 'Sky Mavis Account',
-        description: 'Connect to Ronin Wallet from Sky Mavis Account',
-        icons: [],
-        url: 'https://accounts.skymavis.com',
-      },
-      showQrModal: false,
-      disableProviderPing: true,
-    })
-
-    providerRef.current = provider
-
-    await provider.disconnect()
-
-    provider.on('display_uri', (uri: string) => {
-      setUri(uri)
-    })
-
-    await provider.enable()
-
-    const initialData = await provider.request<InitialData>({
-      method: 'wallet_initialData',
-    })
-
-    if (!initialData) {
-      const [accounts, chainId] = await Promise.all([
-        provider.request<string[]>({
-          method: 'eth_accounts',
-        }),
-        provider.request<number>({
-          method: 'eth_chainId',
-        }),
-      ])
-
-      return {
-        chainId,
-        account: accounts?.[0],
-      }
+  const connectRoninExtension = async (): Promise<InitialData | null> => {
+    if (!window?.ronin) {
+      setError('Wallet is not installed.')
+      return null
     }
 
-    return initialData
+    const provider = window.ronin.provider
+    providerRef.current = provider
+    setupEventListeners()
+
+    await provider.request?.({
+      method: 'eth_requestAccounts',
+    })
+
+    const [accounts, chainId] = (await Promise.all([
+      provider.request?.({
+        method: 'eth_accounts',
+      }),
+      provider.request?.({
+        method: 'eth_chainId',
+      }),
+    ])) as [string[], string]
+
+    return {
+      account: accounts[0],
+      chainId: parseInt(chainId, 16),
+    }
   }
 
   const linkRoninWallet = async () => {
     try {
-      const { chainId, account: address } = await connectRoninWallet()
+      const connectData = await connectRoninExtension()
+
+      if (!connectData) return
+
+      const { account: address, chainId } = connectData
 
       const {
         data: { nonce, issued_at, not_before, expiration_time },
@@ -146,7 +134,7 @@ export default function Home() {
 
       if (!providerRef.current) return
 
-      const signature = await providerRef.current.request<string>({
+      const signature = await providerRef.current.request({
         method: 'personal_sign',
         params: [message, address],
       })
@@ -163,6 +151,7 @@ export default function Home() {
 
       setToken(data.token)
     } catch (error: any) {
+      console.log('error', error)
       if (isAxiosError(error)) {
         setError(error?.response?.data)
         return
@@ -214,9 +203,8 @@ export default function Home() {
                   }}
                   onClick={linkRoninWallet}
                 >
-                  Generate QR Code
+                  Connect Ronin Extension
                 </button>
-                {uri && <QRCode value={uri} size={178} />}
               </>
             )
 

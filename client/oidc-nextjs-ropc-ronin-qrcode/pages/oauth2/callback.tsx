@@ -28,10 +28,13 @@ const Callback = () => {
       })
 
       setToken(data)
-    } catch (error) {
+    } catch (error: any) {
       if (isAxiosError(error)) {
         setError(error?.response?.data)
+        return
       }
+
+      setError(error?.message ?? error)
     }
   }
 
