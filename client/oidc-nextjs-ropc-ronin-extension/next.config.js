@@ -1,11 +1,11 @@
 /** @type {import('next').NextConfig} */
-require('dotenv').config({ path: '../../.env' })
+require('dotenv').config()
 
 const nextConfig = {
   reactStrictMode: false,
   env: {
-    CALLBACK_URL: process.env.CALLBACK_URL,
-    SERVER_TOKEN_ENDPOINT: process.env.SERVER_TOKEN_ENDPOINT,
+    SERVER_RONIN_TOKEN_ENDPOINT: process.env.SERVER_RONIN_TOKEN_ENDPOINT,
+    SERVER_RONIN_NONCE_ENDPOINT: process.env.SERVER_RONIN_NONCE_ENDPOINT
   },
 }
 
