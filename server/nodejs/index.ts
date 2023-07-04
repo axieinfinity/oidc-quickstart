@@ -3,12 +3,11 @@ import Fastify, { FastifyRequest } from 'fastify'
 import cors from '@fastify/cors'
 import axios, { AxiosError, isAxiosError } from 'axios'
 
-const PORT = Number(process.env.SERVER_PORT) ?? 8080
+const PORT = process.env.SERVER_PORT ? Number(process.env.SERVER_PORT) : 8080
 const OIDC_CLIENT_ID = process.env.OIDC_CLIENT_ID ?? ''
 const API_KEY = process.env.API_KEY ?? ''
 const OIDC_CLIENT_SECRET = process.env.OIDC_CLIENT_SECRET ?? ''
 const OIDC_SCOPE = process.env.OIDC_SCOPE ?? 'openid offline'
-
 
 const OIDC_TOKEN_ENDPOINT =
   process.env.OIDC_TOKEN_ENDPOINT ??
@@ -72,7 +71,9 @@ app.post(
 
     switch (authorization_method) {
       case 'client_secret_basic':
-        headers.Authorization = `Basic ${btoa(`${OIDC_CLIENT_ID}:${OIDC_CLIENT_SECRET}`)}`
+        headers.Authorization = `Basic ${btoa(
+          `${OIDC_CLIENT_ID}:${OIDC_CLIENT_SECRET}`,
+        )}`
         headers.token_endpoint_auth_method = authorization_method
         break
       default:
@@ -120,7 +121,9 @@ app.post(
 
     switch (authorization_method) {
       case 'client_secret_basic':
-        headers.Authorization = `Basic ${btoa(`${OIDC_CLIENT_ID}:${OIDC_CLIENT_SECRET}`)}`
+        headers.Authorization = `Basic ${btoa(
+          `${OIDC_CLIENT_ID}:${OIDC_CLIENT_SECRET}`,
+        )}`
         headers.token_endpoint_auth_method = authorization_method
         break
       default:
