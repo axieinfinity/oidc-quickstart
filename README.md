@@ -45,11 +45,15 @@ sequenceDiagram
 #### 1. Setup Nodejs and pnpm:
    - Nodejs >= 16.17.0
    - pnpm >= 7.5.2
+
 <br/>
+
 #### 2. Request access to Sky Mavis Account and configure client settings.
    - Docs: <https://docs.skymavis.com/docs/sma-get-started>
    - Developer Portal: <https://developers.skymavis.com/>
+   
 <br/>
+
 #### 3. When you have access to the Sky Mavis Account service, open the Developer Console > Products > OAuth 2.0 to configure the client-side settings.
 
    - CLIENT ID
