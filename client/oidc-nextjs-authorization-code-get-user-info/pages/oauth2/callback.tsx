@@ -7,18 +7,19 @@ const SERVER_TOKEN_ENDPOINT =
   'http://localhost:8080/oauth2/authorization-code/token'
 const OIDC_CALLBACK_URL =
   process.env.OIDC_CALLBACK_URL ?? 'http://localhost:3000/oauth2/callback'
+const SERVER_USERINFO_ENDPOINT = process.env.SERVER_USERINFO_ENDPOINT ?? 'http://localhost:8080/oauth2/userinfo'
+
 
 const Callback = () => {
   const router = useRouter()
   const { code } = router.query
-  const [token, setToken] = useState(null)
+  const [token, setToken] = useState<any>(null)
+  const [user, setUser]= useState(null);
   const [error, setError] = useState(null)
 
   const exchangeToken = async () => {
     try {
-      const code_verifier = localStorage.getItem('code_verifier')
-
-      if (!code || !code_verifier) return
+      if (!code) return
 
       const { data } = await axios({
         url: SERVER_TOKEN_ENDPOINT,
@@ -26,18 +27,34 @@ const Callback = () => {
         data: {
           code,
           redirect_uri: OIDC_CALLBACK_URL,
-          code_verifier,
         },
       })
 
       setToken(data)
-    } catch (error: any) {
+    } catch (error) {
       if (isAxiosError(error)) {
         setError(error?.response?.data)
-        return
       }
+    }
+  }
 
-      setError(error?.message ?? error)
+  const getUserInfo = async () => {
+    try {
+      if (!token) return
+
+      const { data } = await axios({
+        url: SERVER_USERINFO_ENDPOINT,
+        method: 'GET',
+        headers: {
+          "authorization": `Bearer ${token.data.access_token}`
+        }
+      })
+
+      setUser(data)
+    } catch (error) {
+      if (isAxiosError(error)) {
+        setError(error?.response?.data)
+      }
     }
   }
 
@@ -60,12 +77,28 @@ const Callback = () => {
           <pre style={{ whiteSpace: 'pre-wrap', width: 600, overflow: 'auto' }}>
             {JSON.stringify(token, null, 2)}
           </pre>
+
+          <button
+            style={{
+              padding: '12px 32px',
+              borderRadius: 8,
+              border: 'none',
+              cursor: 'pointer',
+            }}
+            onClick={getUserInfo}
+          >
+            Get User Info
+          </button>
+
+          <pre style={{ whiteSpace: 'pre-wrap', width: 600, overflow: 'auto' }}>
+            {user ? JSON.stringify(user, null, 2) : ''}
+          </pre>
         </>
       )}
 
       {error && (
         <>
-          <h1>Login failed!</h1>
+          <h1>Failed!</h1>
           <pre style={{ whiteSpace: 'pre-wrap', width: 600, overflow: 'auto' }}>
             {JSON.stringify(error, null, 2)}
           </pre>

@@ -6,7 +6,15 @@ Sample using Nextjs.
 
 Your app must be allowlisted to access the OAuth 2.0 APIs. Follow the steps in the [Get started](https://docs.skymavis.com/docs/sma-get-started#get-started) section to request access to Sky Mavis Account.
 
-### Run & Deploy
+### How to start
 
-1. Run: `pnpm install`
-2. Run: `pnpm dev`
+#### 1. Create a `.env` file follows file `.env.example`:
+
+```shell
+# SERVER ENDPOINT
+SERVER_RONIN_TOKEN_ENDPOINT=http://localhost:8080/oauth2/ronin/token,
+SERVER_RONIN_NONCE_ENDPOINT=http://localhost:8080/oauth2/ronin/fetch-nonce
+```
+
+#### 2. Run: 
+`pnpm install && pnpm dev`

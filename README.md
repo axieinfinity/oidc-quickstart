@@ -1,35 +1,80 @@
 # SKY MAVIS SSO QUICK START
 
+
+## Folder Structure 
+
+
+```
+├── README.md
+├── client (Client App)
+│   ├── oidc-browser-extension-authorization-code
+│   ├── oidc-electron-authorization-code
+│   ├── oidc-javascript-authorization-code
+│   ├── oidc-nextjs-authorization-code
+│   ├── oidc-nextjs-authorization-code-get-user-info
+│   ├── oidc-nextjs-authorization-code-pkce
+│   ├── oidc-nextjs-authorization-code-refresh-token
+│   ├── oidc-nextjs-implicit
+│   ├── oidc-nextjs-ropc
+│   ├── oidc-nextjs-ropc-ronin-extension
+│   ├── oidc-nextjs-ropc-ronin-qrcode
+│   └── oidc-unity-authorization-code
+└── server (Backend Server)
+    └── nodejs
+```
+
+```mermaid
+sequenceDiagram
+  participant U as User
+  autonumber
+  participant CA as Client App
+  participant AS as Backend Server
+  participant RS as OIDC Server
+
+  U->>CA: Access the Client App
+  CA->>AS: Send request to Backend Server
+  AS->>RS: Send request to OIDC Server to exchange token/refresh token
+  RS->>AS: Return access_token
+  AS->>CA: Return access_token
+```
+
 ## Prerequisites
 
-1. Request access to Sky Mavis Account and configure client settings.
+#### 1. Setup Nodejs and pnpm:
+   - Nodejs >= 16.17.0
+   - pnpm >= 7.5.2
 
+#### 2. Request access to Sky Mavis Account and configure client settings.
    - Docs: <https://docs.skymavis.com/docs/sma-get-started>
-   - Developer Portal: <https://developers.skymavis.one/>
+   - Developer Portal: <https://developers.skymavis.com/>
 
-2. When you have access to the Sky Mavis Account service, open the Developer Console > Products > OAuth 2.0 to configure the client-side settings.
+#### 3. When you have access to the Sky Mavis Account service, open the Developer Console > Products > OAuth 2.0 to configure the client-side settings.
 
    - CLIENT ID
    - CLIENT SECRET
-   - SIGN IN REDIRECT URI (CALLBACK_URL)
+   - SIGN IN REDIRECT URI (OIDC_CALLBACK_URL)
 
-<img src="https://files.readme.io/284792b-small-app-oauth-configuration.png" alt="MarineGEO circle logo"/>
+<img style="margin-bottom: 16px;" src="https://files.readme.io/284792b-small-app-oauth-configuration.png" alt="MarineGEO circle logo"/>
 
-3. Create a `.env` file at the root of your project directory and add environment variables you need for your project. Check out file `.env.example`:
+#### 4. All environments variables can be used in this repository.
 
-```
-## SKY MAVIS SSO ENV
-CLIENT_SECRET=<your_client_secret>
+```shell
+# APP KEY
 API_KEY=<your_api_key>
-CLIENT_ID=<your_client_id>
-SCOPE="openid offline"
-CALLBACK_URL=http://localhost:3000/oauth2/callback
-SSO_AUTHORIZATION_ENDPOINT=https://api-gateway.skymavis.one/oauth2/auth
-SSO_TOKEN_ENDPOINT=https://api-gateway.skymavis.one/account/oauth2/token
-SSO_USERINFO_ENDPOINT=https://api-gateway.skymavis.one/account/userinfo
-SSO_JWKS_ENDPOINT=https://api-gateway.skymavis.one/account/.well-known/jwks.json
 
-# SERVER ENDPOINTS
+# OIDC ENV
+OIDC_CLIENT_ID=<your_client_id>
+OIDC_CLIENT_SECRET=<your_client_secret>
+OIDC_SCOPE="openid offline"
+OIDC_CALLBACK_URL=http://localhost:3000/oauth2/callback
+
+# OIDC ENDPOINTS
+OIDC_AUTHORIZATION_ENDPOINT=https://api-gateway.skymavis.com/oauth2/auth
+OIDC_TOKEN_ENDPOINT=https://api-gateway.skymavis.com/account/oauth2/token
+OIDC_USERINFO_ENDPOINT=https://api-gateway.skymavis.com/account/userinfo
+OIDC_JWKS_ENDPOINT=https://api-gateway.skymavis.com/account/.well-known/jwks.json
+
+# SERVER ENDPOINTS: YOUR SERVER APIs
 SERVER_TOKEN_ENDPOINT=http://localhost:8080/oauth2/authorization-code/token
 SERVER_REFRESH_TOKEN_ENDPOINT=http://localhost:8080/oauth2/authorization-code/refresh_token
 SERVER_ROPC_TOKEN_ENDPOINT=http://localhost:8080/oauth2/ropc/token
@@ -39,31 +84,28 @@ SERVER_RONIN_NONCE_ENDPOINT=http://localhost:8080/oauth2/ronin/fetch-nonce
 SERVER_RONIN_TOKEN_ENDPOINT=http://localhost:8080/oauth2/ronin/token
 
 # ELECTRON ENV
-CALLBACK_DEEPLINK=mavis-sso://oauth2/callback
+CALLBACK_DEEPLINK=mavis-electron-app://oauth2/callback
 
 # CAPTCHA ENV
-GEETEST_ENDPOINT=https://captcha.skymavis.one/api/geetest/register
+GEETEST_ENDPOINT=https://captcha.skymavis.com/api/geetest/register
 ```
 
 ## How to run
 
-1. Setup Nodejs and pnpm:
+#### 1. Go to your favorite sample
 
-Remediation version:
+#### 2. Setup ```.env``` same as ```.env.example``` in your favorite sample
 
-- Nodejs >= 16.17.0
-- pnpm >= 7.5.2
+#### 3. Run Nodejs server:
 
-2. Run Nodejs server:
-
-```bash
+```shell
 cd server/nodejs
 pnpm install && pnpm dev
 ```
 
-3. Go to your favorite sample, install packages and start:
+#### 4. Go to your client favorite sample, install packages and start:
 
-```bash
+```shell
 cd client/oidc-nextjs-ropc
 pnpm install && pnpm dev
 ```

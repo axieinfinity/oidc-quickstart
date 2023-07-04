@@ -10,7 +10,7 @@ export async function onLoad(container) {
         method: 'POST',
         data: {
           code,
-          redirect_uri: CALLBACK_URL,
+          redirect_uri: OIDC_CALLBACK_URL,
         },
       })
 
@@ -40,12 +40,12 @@ export async function onLoad(container) {
     state: crypto.randomUUID(),
     response_type: 'code',
     remember: 'false',
-    client_id: CLIENT_ID,
-    scope: SCOPE,
-    redirect_uri: CALLBACK_URL,
+    client_id: OIDC_CLIENT_ID,
+    scope: OIDC_SCOPE,
+    redirect_uri: OIDC_CALLBACK_URL,
   })
 
-  const url = `${SSO_AUTHORIZATION_ENDPOINT}?${query.toString()}`
+  const url = `${OIDC_AUTHORIZATION_ENDPOINT}?${query.toString()}`
 
   const loginButton = document.createElement('button')
   loginButton.setAttribute('type', 'button')

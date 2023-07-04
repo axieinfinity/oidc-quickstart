@@ -15,10 +15,10 @@ namespace Scenes
 		public GameObject loginPage;
 		public Text txtResponse;
 
-		public string CLIENT_ID = "<your_client_id>";
-		public string SCOPE = "openid offline";
+		public string OIDC_CLIENT_ID = "<your_client_id>";
+		public string OIDC_SCOPE = "openid offline";
 		public string REDIRECT_URI = "demologin://platform";
-		public string SSO_AUTHORIZATION_ENDPOINT = "https://api-gateway.skymavis.one/oauth2/auth";
+		public string OIDC_AUTHORIZATION_ENDPOINT = "https://api-gateway.skymavis.com/oauth2/auth";
 		public string SERVER_TOKEN_ENDPOINT = "http://localhost:8080/oauth2/authorization-code/token";
 
 		public static LoginController getInstance()
@@ -54,12 +54,12 @@ namespace Scenes
 
 			NameValueCollection collection = new NameValueCollection();
 			collection.Add("state", myuuidAsString);
-			collection.Add("client_id", CLIENT_ID);
+			collection.Add("client_id", OIDC_CLIENT_ID);
 			collection.Add("response_type", "code");
-			collection.Add("scope", SCOPE);
+			collection.Add("scope", OIDC_SCOPE);
 			collection.Add("redirect_uri", REDIRECT_URI);
 
-			string url = SSO_AUTHORIZATION_ENDPOINT + ToQueryString(collection);
+			string url = OIDC_AUTHORIZATION_ENDPOINT + ToQueryString(collection);
 
 			Application.OpenURL(url);
 		}

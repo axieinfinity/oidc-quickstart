@@ -8,7 +8,7 @@ import axios, { AxiosError, isAxiosError } from 'axios'
 
 const GEETEST_ENDPOINT =
   process.env.GEETEST_ENDPOINT ??
-  'https://captcha.skymavis.one/api/geetest/register'
+  'https://captcha.skymavis.com/api/geetest/register'
 const SERVER_ROPC_TOKEN_ENDPOINT =
   process.env.SERVER_ROPC_TOKEN_ENDPOINT ??
   'http://localhost:8080/oauth2/ropc/mfa'
