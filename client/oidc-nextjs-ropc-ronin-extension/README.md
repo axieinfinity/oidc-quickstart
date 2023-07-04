@@ -8,13 +8,14 @@ Your app must be allowlisted to access the OAuth 2.0 APIs. Follow the steps in t
 
 ### How to start
 
-#### 1. Create a `.env` file follows file `.env.example`:
+#### 1. Create a `.env` file follows file `.env.example`
 
 ```shell
 # SERVER ENDPOINT
-SERVER_RONIN_TOKEN_ENDPOINT=http://localhost:8080/oauth2/ronin/token,
+SERVER_RONIN_TOKEN_ENDPOINT=http://localhost:8080/oauth2/ronin/token
 SERVER_RONIN_NONCE_ENDPOINT=http://localhost:8080/oauth2/ronin/fetch-nonce
 ```
 
-#### 2. Run: 
+#### 2. Run
+
 `pnpm install && pnpm dev`

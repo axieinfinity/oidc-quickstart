@@ -34,7 +34,7 @@ type InitialData = {
   chainId: number
 }
 
-function generateSingingMessage({
+const generateSingingMessage = ({
   address,
   version = 1,
   chainId = 2020,
@@ -50,15 +50,13 @@ function generateSingingMessage({
   issuedAt: string
   expirationTime: string
   notBefore: string
-}) {
-  const { host, origin } = window.location
-
-  return `${host} wants you to sign in with your Ronin account:
+}) => {
+  return `accounts.skymavis.com wants you to sign in with your Ronin account:
 ${address.replace('0x', 'ronin:').toLowerCase()}
 
 I accept the Terms of Use (https://axieinfinity.com/terms-of-use) and the Privacy Policy (https://axieinfinity.com/privacy-policy)
 
-URI: ${origin}
+URI: https://accounts.skymavis.com
 Version: ${version}
 Chain ID: ${chainId}
 Nonce: ${nonce}

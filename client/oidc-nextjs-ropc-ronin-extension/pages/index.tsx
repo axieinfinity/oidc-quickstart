@@ -19,7 +19,7 @@ const SERVER_RONIN_TOKEN_ENDPOINT =
   process.env.SERVER_RONIN_TOKEN_ENDPOINT ??
   'http://localhost:8080/oauth2/ronin/token'
 
-function generateSingingMessage({
+const generateSingingMessage = ({
   address,
   version = 1,
   chainId = 2020,
@@ -35,21 +35,19 @@ function generateSingingMessage({
   issuedAt: string
   expirationTime: string
   notBefore: string
-}) {
-  const { host, origin } = window.location
+}) => {
+  return `accounts.skymavis.com wants you to sign in with your Ronin account:
+  ${address.replace('0x', 'ronin:').toLowerCase()}
 
-  return `${host} wants you to sign in with your Ronin account:
-${address.replace('0x', 'ronin:').toLowerCase()}
+  I accept the Terms of Use (https://axieinfinity.com/terms-of-use) and the Privacy Policy (https://axieinfinity.com/privacy-policy)
 
-I accept the Terms of Use (https://axieinfinity.com/terms-of-use) and the Privacy Policy (https://axieinfinity.com/privacy-policy)
-
-URI: ${origin}
-Version: ${version}
-Chain ID: ${chainId}
-Nonce: ${nonce}
-Issued At: ${issuedAt}
-Expiration Time: ${expirationTime}
-Not Before: ${notBefore}`
+  URI: https://accounts.skymavis.com
+  Version: ${version}
+  Chain ID: ${chainId}
+  Nonce: ${nonce}
+  Issued At: ${issuedAt}
+  Expiration Time: ${expirationTime}
+  Not Before: ${notBefore}`
 }
 
 const setupEventListeners = (provider?: EIP1193Provider) => {
