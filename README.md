@@ -3,22 +3,6 @@
 
 ## Folder Structure 
 
-```mermaid
-sequenceDiagram
-  participant U as User
-  autonumber
-  participant CA as Client App
-  participant AS as Backend Server
-  participant RS as OIDC Server
-
-  U->>CA: Access the Client App
-  CA->>AS: Send request to Backend Server
-  AS->>RS: Send request to OIDC Server to exchange token/refresh token
-  RS->>AS: Return access_token
-  AS->>CA: Return access_token
-```
-
-<br/>
 
 ```
 ├── README.md
@@ -39,6 +23,23 @@ sequenceDiagram
     └── nodejs
 ```
 
+<br/>
+
+
+```mermaid
+sequenceDiagram
+  participant U as User
+  autonumber
+  participant CA as Client App
+  participant AS as Backend Server
+  participant RS as OIDC Server
+
+  U->>CA: Access the Client App
+  CA->>AS: Send request to Backend Server
+  AS->>RS: Send request to OIDC Server to exchange token/refresh token
+  RS->>AS: Return access_token
+  AS->>CA: Return access_token
+```
 
 ## Prerequisites
 
