@@ -1,5 +1,45 @@
 # SKY MAVIS SSO QUICK START
 
+
+## Structure 
+
+```mermaid
+sequenceDiagram
+  participant U as User
+  autonumber
+  participant CA as Client App
+  participant AS as Backend Server
+  participant RS as OIDC Server
+
+  U->>CA: Access the Client App
+  CA->>AS: Send request to Backend Server
+  AS->>RS: Send request to OIDC Server to exchange token/refresh token
+  RS->>AS: Return access_token
+  AS->>CA: Return access_token
+```
+
+<br/>
+
+```
+├── README.md
+├── client (Client App)
+│   ├── oidc-browser-extension-authorization-code
+│   ├── oidc-electron-authorization-code
+│   ├── oidc-javascript-authorization-code
+│   ├── oidc-nextjs-authorization-code
+│   ├── oidc-nextjs-authorization-code-get-user-info
+│   ├── oidc-nextjs-authorization-code-pkce
+│   ├── oidc-nextjs-authorization-code-refresh-token
+│   ├── oidc-nextjs-implicit
+│   ├── oidc-nextjs-ropc
+│   ├── oidc-nextjs-ropc-ronin-extension
+│   ├── oidc-nextjs-ropc-ronin-qrcode
+│   └── oidc-unity-authorization-code
+└── server (Backend Server)
+    └── nodejs
+```
+
+
 ## Prerequisites
 
 #### 1. Setup Nodejs and pnpm:
