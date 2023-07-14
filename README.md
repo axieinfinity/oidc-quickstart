@@ -1,22 +1,24 @@
-# SKY MAVIS SSO QUICK START
+# Sky Mavis OAuth 2.0 quickstart
 
-This guide provides quick start instructions for setting up and running the SKY MAVIS Single Sign-On (SSO) integration. The integration allows users to authenticate with their Sky Mavis account and access protected resources in your application.
+This guide demonstrates how to quickly integrate Sky Mavis Account sign-in into an app. The integration allows users to do the following:
 
-The samples provided cover various languages and frameworks such as JavaScript vanilla, Next.js, Browser extension, Electron, Unity, and more.
+- Sign in to the app with their Sky Mavis account.
+- Access protected resources in the app.
 
-The guide covers the following topics:
+The repository contains sample client apps in various languages and frameworks, such as JavaScript vanilla, Next.js, browser extension, Electron, and Unity.
+
+This quickstart covers the following topics:
 
 1. Folder structure and sequence diagram of the integration
 2. Prerequisites for setting up the integration
-3. Configuration steps for requesting access to Sky Mavis Account and setting up client-side settings
-4. Environment variables used in the repository
-Instructions on how to run the integration
+3. Environment variables used in the repository
+4. Instructions on how to run the integration
 
-## Folder Structure
+## Folder structure
 
 ```
 ├── README.md
-├── client (Client App)
+├── client (client app)
 │   ├── oidc-browser-extension-authorization-code
 │   ├── oidc-electron-authorization-code
 │   ├── oidc-javascript-authorization-code
@@ -29,11 +31,11 @@ Instructions on how to run the integration
 │   ├── oidc-nextjs-ropc-ronin-extension
 │   ├── oidc-nextjs-ropc-ronin-qrcode
 │   └── oidc-unity-authorization-code
-└── server (Backend Server)
+└── server (backend server)
     └── nodejs
 ```
 
-## Sequence Diagram
+## Integration flow
 
 ```mermaid
 sequenceDiagram
@@ -52,26 +54,11 @@ sequenceDiagram
 
 ## Prerequisites
 
-### 1. Setup Nodejs and pnpm
+- Node.js version 16.17.0 or later. Install using a [package manager](https://nodejs.dev/en/download/package-manager) or download the [official installer](https://nodejs.dev/en/).
+- pnpm version 7.5.2 or later. Install following the [official instruction](https://pnpm.io/installation).
+- API key, access to the Sky Mavis Account service, and fully configured OAuth 2.0 settings. For more information, see [Get started](https://docs.skymavis.com/docs/mavis-services/mavis-account/guides/get-started).
 
-- Ensure that you have `Node.js` installed with a version >= 16.17.0.
-- Install the `pnpm` package manager with a version >= 7.5.2.
-
-### 2. Request access to Sky Mavis Account and configure client settings
-
-- To get started, request access to the Sky Mavis Account service.
-- Follow the documentation provided in the [Sky Mavis Documentation](https://docs.skymavis.com/docs/sma-get-started) to configure your client settings.
-
-### 3. Configure Client-side Settings in Sky Mavis Account Service
-
-- Once you have access to the Sky Mavis Account service, navigate to the Developer Console > Products > OAuth 2.0 section. You will get some variables below:
-  - **CLIENT ID**: Obtain a unique client ID for your application.
-  - **CLIENT SECRET**: Generate a client secret key.
-  - **SIGN IN REDIRECT URI (OIDC_CALLBACK_URL)**: Define the redirect URI where the user will be redirected after signing in.
-
-![OAuth Configuration](https://files.readme.io/284792b-small-app-oauth-configuration.png)
-
-### 4. Environment Variables
+## Environment variables
 
 The following environment variables can be used in this repository:
 
@@ -107,17 +94,17 @@ CALLBACK_DEEPLINK=mavis-electron-app://oauth2/callback
 GEETEST_ENDPOINT=https://captcha.skymavis.com/api/geetest/register
 ```
 
-## How to run
+## Integrate Sky Mavis Account sign-in
 
-### 1. Choose a Sample
+### Step 1. Choose a sample app
 
-Go to your favorite sample from the `./client` folder.
+Choose the app of your interest from the `./client` folder.
 
-### 2. Setup Environment Variables
+### Step 2. Set up environment variables
 
-Set up the `.env` file according to the provided `.env.example` file in your selected sample.
+Set up the `.env` file according to the provided `.env.example` file in your selected sample app.
 
-### 3. Run the Nodejs server
+### 3. Run the Node.js server
 
 Navigate to the `./server/nodejs` folder and execute the following commands:
 
@@ -126,7 +113,7 @@ cd server/nodejs
 pnpm install && pnpm dev
 ```
 
-### 4. Start the Client App
+### 4. Start the client app
 
 Navigate to your chosen client sample in the `./client` folder, install the required packages, and start the application:
 
