@@ -1,18 +1,23 @@
-# Sky Mavis OAuth 2.0 quickstart
+# Sky Mavis Account OIDC quickstart
 
-This guide demonstrates how to quickly integrate Sky Mavis Account sign-in into an app. The integration allows users to do the following:
+## Introduction
 
-- Sign in to the app with their Sky Mavis account.
-- Access protected resources in the app.
+OpenID Connect (OIDC) is a protocol for authentication that builds on the OAuth 2.0 authorization framework. This quickstart describes how to quickly integrate Sky Mavis Account in a sample app using the authentication flows supported by OIDC:
 
-The repository contains sample client apps in various languages and frameworks, such as JavaScript vanilla, Next.js, browser extension, Electron, and Unity.
+- Authorization code flow for apps that have a backend that can communicate with Sky Mavis Account.
+- Implicit flow for apps that have no “backend” logic on the web server, like a Javascript app.
+- Resource Owner Password Credentials (ROPC) flow that doesn't have a login UI and is useful when access to a web browser isn't possible.
+
+The integration allows users sign in to your app with their Sky Mavis account and access protected resources in the app.
+
+This repository contains sample client apps in various languages and frameworks, such as JavaScript vanilla, Next.js, browser extension, Electron, and Unity.
 
 This quickstart covers the following topics:
 
-1. Folder structure and sequence diagram of the integration
-2. Prerequisites for setting up the integration
-3. Environment variables used in the repository
-4. Instructions on how to run the integration
+- Folder structure and sequence diagram of the integration
+- Prerequisites for setting up the integration
+- Environment variables used in the repository
+- Instructions on how to run the integration
 
 ## Folder structure
 
@@ -41,13 +46,13 @@ This quickstart covers the following topics:
 sequenceDiagram
   participant U as User
   autonumber
-  participant CA as Client App
-  participant AS as Backend Server
-  participant RS as OIDC Server
+  participant CA as Client app
+  participant AS as Backend server
+  participant RS as OIDC server
 
-  U->>CA: Access the Client App
-  CA->>AS: Send request to Backend Server
-  AS->>RS: Send request to OIDC Server to exchange token/refresh token
+  U->>CA: Access the client app
+  CA->>AS: Send request to the backend server
+  AS->>RS: Send request to the OIDC server to exchange token/refresh token
   RS->>AS: Return access_token
   AS->>CA: Return access_token
 ```
@@ -120,3 +125,4 @@ Navigate to your chosen client sample in the `./client` folder, install the requ
 ```shell
 cd client/oidc-nextjs-ropc
 pnpm install && pnpm dev
+```
