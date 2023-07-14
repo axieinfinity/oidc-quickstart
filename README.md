@@ -1,8 +1,16 @@
 # SKY MAVIS SSO QUICK START
 
+This guide provides quick start instructions for setting up and running the SKY MAVIS Single Sign-On (SSO) integration. The integration allows users to authenticate with their Sky Mavis account and access protected resources in your application.
 
-## Folder Structure 
+The guide covers the following topics:
 
+1. Folder structure and sequence diagram of the integration
+2. Prerequisites for setting up the integration
+3. Configuration steps for requesting access to Sky Mavis Account and setting up client-side settings
+4. Environment variables used in the repository
+Instructions on how to run the integration
+
+## Folder Structure
 
 ```
 ├── README.md
@@ -23,6 +31,8 @@
     └── nodejs
 ```
 
+## Sequence Diagram
+
 ```mermaid
 sequenceDiagram
   participant U as User
@@ -40,23 +50,28 @@ sequenceDiagram
 
 ## Prerequisites
 
-#### 1. Setup Nodejs and pnpm:
-   - Nodejs >= 16.17.0
-   - pnpm >= 7.5.2
+### 1. Setup Nodejs and pnpm
 
-#### 2. Request access to Sky Mavis Account and configure client settings.
-   - Docs: <https://docs.skymavis.com/docs/sma-get-started>
-   - Developer Portal: <https://developers.skymavis.com/>
+- Ensure that you have `Node.js` installed with a version >= 16.17.0.
+- Install the `pnpm` package manager with a version >= 7.5.2.
 
-#### 3. When you have access to the Sky Mavis Account service, open the Developer Console > Products > OAuth 2.0 to configure the client-side settings.
+### 2. Request access to Sky Mavis Account and configure client settings
 
-   - CLIENT ID
-   - CLIENT SECRET
-   - SIGN IN REDIRECT URI (OIDC_CALLBACK_URL)
+- To get started, request access to the Sky Mavis Account service.
+- Follow the documentation provided in the [Sky Mavis Documentation](https://docs.skymavis.com/docs/sma-get-started) to configure your client settings.
 
-<img style="margin-bottom: 16px;" src="https://files.readme.io/284792b-small-app-oauth-configuration.png" alt="MarineGEO circle logo"/>
+### 3. Configure Client-side Settings in Sky Mavis Account Service
 
-#### 4. All environments variables can be used in this repository.
+- Once you have access to the Sky Mavis Account service, navigate to the Developer Console > Products > OAuth 2.0 section. You will get some variables below:
+  - **CLIENT ID**: Obtain a unique client ID for your application.
+  - **CLIENT SECRET**: Generate a client secret key.
+  - **SIGN IN REDIRECT URI (OIDC_CALLBACK_URL)**: Define the redirect URI where the user will be redirected after signing in.
+
+![OAuth Configuration](https://files.readme.io/284792b-small-app-oauth-configuration.png)
+
+### 4. Environment Variables
+
+The following environment variables can be used in this repository:
 
 ```shell
 # APP KEY
@@ -92,20 +107,27 @@ GEETEST_ENDPOINT=https://captcha.skymavis.com/api/geetest/register
 
 ## How to run
 
-#### 1. Go to your favorite sample
+### 1. Choose a Sample
 
-#### 2. Setup ```.env``` same as ```.env.example``` in your favorite sample
+Go to your favorite sample from the `./client` folder.
 
-#### 3. Run Nodejs server:
+### 2. Setup Environment Variables
+
+Set up the `.env` file according to the provided `.env.example` file in your selected sample.
+
+### 3. Run the Nodejs server
+
+Navigate to the `./server/nodejs` folder and execute the following commands:
 
 ```shell
 cd server/nodejs
 pnpm install && pnpm dev
 ```
 
-#### 4. Go to your client favorite sample, install packages and start:
+### 4. Start the Client App
+
+Navigate to your chosen client sample in the `./client` folder, install the required packages, and start the application:
 
 ```shell
 cd client/oidc-nextjs-ropc
 pnpm install && pnpm dev
-```
