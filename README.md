@@ -2,6 +2,8 @@
 
 This guide provides quick start instructions for setting up and running the SKY MAVIS Single Sign-On (SSO) integration. The integration allows users to authenticate with their Sky Mavis account and access protected resources in your application.
 
+The samples provided cover various languages and frameworks such as JavaScript vanilla, Next.js, Browser extension, Electron, Unity, and more.
+
 The guide covers the following topics:
 
 1. Folder structure and sequence diagram of the integration
