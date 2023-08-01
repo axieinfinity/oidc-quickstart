@@ -8,13 +8,14 @@ const OIDC_CALLBACK_URL =
   process.env.OIDC_CALLBACK_URL ?? 'http://localhost:3000/oauth2/callback'
 const OIDC_SCOPE = process.env.OIDC_SCOPE ?? 'openid offline'
 
-const requestLogin = () => {
+const requestLogin = (configs?: Record<string, string>) => {
   const query = new URLSearchParams({
     response_type: 'code',
     state: crypto.randomUUID(),
     client_id: OIDC_CLIENT_ID,
     redirect_uri: OIDC_CALLBACK_URL,
     scope: OIDC_SCOPE,
+    ...(configs || {}),
   })
 
   window.open(`${OIDC_AUTHORIZATION_ENDPOINT}?${query.toString()}`, '_self')
@@ -23,11 +24,26 @@ const requestLogin = () => {
 export default function Home() {
   return (
     <main>
+      <h1>SCENARIOS</h1>
       <Space direction="vertical">
-        <Button onClick={requestLogin} type="primary">
+        <Button
+          onClick={() =>
+            requestLogin({
+              providers: 'magic_link,email,apple,google,facebook',
+            })
+          }
+          type="primary"
+        >
           Case login in
         </Button>
-        <Button href="/link-wallet" type="primary">
+        <Button
+          onClick={() =>
+            requestLogin({
+              providers: 'ronin,qrcode',
+            })
+          }
+          type="primary"
+        >
           Case not login in
         </Button>
       </Space>

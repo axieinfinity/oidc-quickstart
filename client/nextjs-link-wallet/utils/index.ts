@@ -30,6 +30,9 @@ export const SERVER_RONIN_LINK_WALLET_ENDPOINT =
 export const LINK_WALLET_REDIRECT_URI =
   process.env.LINK_WALLET_REDIRECT_URI ??
   'http://localhost:3000/link-wallet/callback'
+export const SERVER_USERINFO_ENDPOINT =
+  process.env.SERVER_USERINFO_ENDPOINT ??
+  'http://localhost:8080/oauth2/userinfo'
 
 export const WC_METADATA = {
   projectId: WC_DEFAULT_PROJECT_ID,

@@ -1,4 +1,5 @@
-import { Button } from 'antd'
+import { SERVER_USERINFO_ENDPOINT } from '@/utils'
+import { Alert, Button } from 'antd'
 import axios, { isAxiosError } from 'axios'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -19,6 +20,7 @@ const Callback = () => {
   const [tokenResponse, setTokenResponse] = useState<TTokenResponse | null>(
     null,
   )
+  const [user, setUser] = useState<Record<string, string> | null>(null)
   const [error, setError] = useState(null)
 
   const exchangeToken = async () => {
@@ -45,9 +47,33 @@ const Callback = () => {
     }
   }
 
+  const getUserInfo = async () => {
+    try {
+      if (!tokenResponse) return
+
+      const { data } = await axios({
+        url: SERVER_USERINFO_ENDPOINT,
+        method: 'GET',
+        headers: {
+          authorization: `Bearer ${tokenResponse.access_token}`,
+        },
+      })
+
+      setUser(data)
+    } catch (error) {
+      if (isAxiosError(error)) {
+        setError(error?.response?.data)
+      }
+    }
+  }
+
   useEffect(() => {
     if (code) exchangeToken()
   }, [code])
+
+  useEffect(() => {
+    if (tokenResponse) getUserInfo()
+  }, [tokenResponse])
 
   return (
     <div>
@@ -55,7 +81,7 @@ const Callback = () => {
         if (error)
           return (
             <>
-              <h1>Something went wrong!</h1>
+              <h1>SOMETHING WENT WRONG!</h1>
               <pre
                 style={{
                   whiteSpace: 'pre-wrap',
@@ -71,19 +97,56 @@ const Callback = () => {
         if (tokenResponse)
           return (
             <>
-              <h1>Login successful!</h1>
-              <pre
-                style={{ whiteSpace: 'pre-wrap', width: 600, overflow: 'auto' }}
-              >
-                {JSON.stringify(tokenResponse, null, 2)}
-              </pre>
-              <Button
-                type="primary"
-                // Note: You should storage the access token some where instead.
-                href={`/link-wallet?access_token=${tokenResponse.access_token}`}
-              >
-                Next step
-              </Button>
+              {user && user?.roninAddress && (
+                <Alert
+                  style={{ width: 600, marginBottom: 24 }}
+                  type="success"
+                  message="Congratulation!"
+                  description="You already have your own Ronin address."
+                />
+              )}
+
+              <h1>TOKEN</h1>
+              {tokenResponse && (
+                <pre
+                  style={{
+                    whiteSpace: 'pre-wrap',
+                    width: 600,
+                    overflow: 'auto',
+                    marginBottom: 24,
+                  }}
+                >
+                  {JSON.stringify(tokenResponse, null, 2)}
+                </pre>
+              )}
+
+              <h1>USER</h1>
+              {user && (
+                <pre
+                  style={{
+                    whiteSpace: 'pre-wrap',
+                    width: 600,
+                    overflow: 'auto',
+                    marginBottom: 24,
+                  }}
+                >
+                  {JSON.stringify(user, null, 2)}
+                </pre>
+              )}
+
+              {user && !user?.roninAddress && (
+                <Button
+                  type="primary"
+                  // Note: You should storage the access token some where instead.
+                  onClick={() =>
+                    router.push(
+                      `/link-wallet?access_token=${tokenResponse.access_token}`,
+                    )
+                  }
+                >
+                  Next step
+                </Button>
+              )}
             </>
           )
       })()}

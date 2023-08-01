@@ -177,7 +177,7 @@ export default function LinkWallet() {
   if (error)
     return (
       <Alert
-        message="Connect failed!"
+        message="Link wallet failed!"
         description={
           <pre
             style={{

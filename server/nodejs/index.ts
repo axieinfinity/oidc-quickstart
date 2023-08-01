@@ -15,6 +15,9 @@ const OIDC_TOKEN_ENDPOINT =
 const OIDC_USERINFO_ENDPOINT =
   process.env.OIDC_USERINFO_ENDPOINT ??
   'https://api-gateway.skymavis.com/account/userinfo'
+const OIDC_FETCH_NONCE_ENDPOINT =
+  process.env.OIDC_FETCH_NONCE_ENDPOINT ??
+  'https://athena.skymavis.com/v2/public/auth/ronin/fetch-nonce'
 
 const app = Fastify()
 
@@ -277,6 +280,7 @@ app.post(
       access_token,
       redirect_uri,
       grant_type: 'link-wallet',
+      scope: OIDC_SCOPE,
       client_id: OIDC_CLIENT_ID,
       client_secret: OIDC_CLIENT_SECRET,
     })
@@ -294,6 +298,7 @@ app.post(
         access_token,
         redirect_uri,
         grant_type: 'link-wallet',
+        scope: OIDC_SCOPE,
         client_id: OIDC_CLIENT_ID,
         client_secret: OIDC_CLIENT_SECRET,
       },
@@ -318,8 +323,7 @@ app.get(
     const { address } = req.query
 
     const { data } = await axios({
-      baseURL: 'https://athena.skymavis.one/',
-      url: 'v2/public/auth/ronin/fetch-nonce',
+      url: OIDC_FETCH_NONCE_ENDPOINT,
       params: {
         address,
       },
@@ -342,9 +346,7 @@ app.get('/oauth2/userinfo', async req => {
     headers,
   })
 
-  return {
-    data,
-  }
+  return data
 })
 
 /* -------------------------------------------- */
