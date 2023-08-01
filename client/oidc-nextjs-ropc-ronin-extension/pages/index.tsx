@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react'
-import QRCode from 'qrcode.react'
 import { EIP1193Event, EIP1193Provider, InitialData } from './types'
 import axios, { isAxiosError } from 'axios'
 
