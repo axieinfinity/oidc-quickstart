@@ -145,7 +145,7 @@ const Callback = () => {
                     )
                   }
                 >
-                  Next step
+                  You are already logged in
                 </Button>
               )}
             </>

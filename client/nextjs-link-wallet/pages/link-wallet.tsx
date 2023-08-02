@@ -156,8 +156,11 @@ export default function LinkWallet() {
   const loginROPC = async (
     connectHandler: () => Promise<InitialData | null>,
   ) => {
-    const { address, message, signature } =
-      (await signMessage(connectHandler)) ?? {}
+    const signMessageData = await signMessage(connectHandler)
+
+    if (!signMessageData) return
+
+    const { address, message, signature } = signMessageData
 
     try {
       const { data } = await axios({
@@ -184,8 +187,12 @@ export default function LinkWallet() {
   const linkWallet = async (
     connectHandler: () => Promise<InitialData | null>,
   ) => {
-    const { address, message, signature } =
-      (await signMessage(connectHandler)) ?? {}
+    const signMessageData = await signMessage(connectHandler)
+    console.log('signMessageData', signMessageData)
+
+    if (!signMessageData) return
+
+    const { address, message, signature } = signMessageData
 
     try {
       const { data } = await axios({
@@ -230,7 +237,30 @@ export default function LinkWallet() {
       />
     )
 
-  if (!accessToken) {
+  if (tokenResponse) {
+    return (
+      <div>
+        <Alert
+          style={{ width: 600 }}
+          type="success"
+          message="Congratulation!"
+          description="Link wallet successful."
+        />
+        <pre
+          style={{
+            whiteSpace: 'pre-wrap',
+            width: 600,
+            overflow: 'auto',
+            marginBottom: 24,
+          }}
+        >
+          {JSON.stringify(tokenResponse, null, 2)}
+        </pre>
+      </div>
+    )
+  }
+
+  if (!accessToken)
     return (
       <div>
         <h1>LINK WALLET</h1>
@@ -263,63 +293,38 @@ export default function LinkWallet() {
         </Space>
       </div>
     )
-  }
 
-  return (
-    <div>
-      {!tokenResponse && (
-        <>
-          <h1>LINK WALLET</h1>
-          <Space direction="vertical">
-            <Button onClick={() => linkWallet(connectExtension)} type="primary">
-              Using extension
-            </Button>
-            <Button
-              onClick={() => linkWallet(() => connectMobileWallet('app'))}
-              type="primary"
-            >
-              Using mobile wallet
-            </Button>
-            <Button
-              onClick={() => linkWallet(() => connectMobileWallet('qrcode'))}
-              type="primary"
-            >
-              Using QR code
-            </Button>
-            {isShowQRCode && <QRCode value={uri} size={178} />}
-            <Modal
-              open={isShowUniversalLinkModal}
-              okButtonProps={{ href: toRoninWalletUniversalLink(uri) }}
-              onCancel={() => setIsShowUniversalLinkModal(false)}
-            >
-              <a href={toRoninWalletUniversalLink(uri)}>
-                Click to switch to mobile wallet
-              </a>
-            </Modal>
-          </Space>
-        </>
-      )}
-
-      {tokenResponse && (
-        <>
-          <Alert
-            style={{ width: 600 }}
-            type="success"
-            message="Congratulation!"
-            description="Link wallet successful."
-          />
-          <pre
-            style={{
-              whiteSpace: 'pre-wrap',
-              width: 600,
-              overflow: 'auto',
-              marginBottom: 24,
-            }}
+  if (accessToken)
+    return (
+      <div>
+        <h1>LINK WALLET</h1>
+        <Space direction="vertical">
+          <Button onClick={() => linkWallet(connectExtension)} type="primary">
+            Using extension
+          </Button>
+          <Button
+            onClick={() => linkWallet(() => connectMobileWallet('app'))}
+            type="primary"
           >
-            {JSON.stringify(tokenResponse, null, 2)}
-          </pre>
-        </>
-      )}
-    </div>
-  )
+            Using mobile wallet
+          </Button>
+          <Button
+            onClick={() => linkWallet(() => connectMobileWallet('qrcode'))}
+            type="primary"
+          >
+            Using QR code
+          </Button>
+          {isShowQRCode && <QRCode value={uri} size={178} />}
+          <Modal
+            open={isShowUniversalLinkModal}
+            okButtonProps={{ href: toRoninWalletUniversalLink(uri) }}
+            onCancel={() => setIsShowUniversalLinkModal(false)}
+          >
+            <a href={toRoninWalletUniversalLink(uri)}>
+              Click to switch to mobile wallet
+            </a>
+          </Modal>
+        </Space>
+      </div>
+    )
 }

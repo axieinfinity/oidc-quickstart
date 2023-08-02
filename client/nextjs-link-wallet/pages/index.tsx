@@ -1,3 +1,4 @@
+import { randomUUID } from '@/utils'
 import { Button, Space } from 'antd'
 import { useRouter } from 'next/router'
 
@@ -11,17 +12,18 @@ const OIDC_SCOPE = process.env.OIDC_SCOPE ?? 'openid offline'
 
 export default function Home() {
   const router = useRouter()
+
   const requestLogin = (configs?: Record<string, string>) => {
     const query = new URLSearchParams({
       response_type: 'code',
-      state: crypto.randomUUID(),
+      state: randomUUID(),
       client_id: OIDC_CLIENT_ID,
       redirect_uri: OIDC_CALLBACK_URL,
       scope: OIDC_SCOPE,
       ...(configs || {}),
     })
 
-    router.push(`${OIDC_AUTHORIZATION_ENDPOINT}?${query.toString()}`, '_self')
+    router.push(`${OIDC_AUTHORIZATION_ENDPOINT}?${query.toString()}`)
   }
 
   return (
