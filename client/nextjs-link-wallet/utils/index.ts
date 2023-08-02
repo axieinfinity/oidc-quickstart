@@ -78,38 +78,3 @@ export const generateSingingMessage = ({
     .replace('0x', 'ronin:')
     .toLowerCase()}\n\nI accept the Terms of Use (https://axieinfinity.com/terms-of-use) and the Privacy Policy (https://axieinfinity.com/privacy-policy)\n\nURI: https://accounts.skymavis.com\nVersion: ${version}\nChain ID: ${chainId}\nNonce: ${nonce}\nIssued At: ${issuedAt}\nExpiration Time: ${expirationTime}\nNot Before: ${notBefore}`
 }
-
-export const toMessage = ({
-  address,
-  version = 1,
-  chainId = 2020,
-  nonce,
-  issuedAt,
-  expirationTime,
-  notBefore,
-}: {
-  address: string
-  version?: number
-  chainId: number
-  nonce: string
-  issuedAt: string
-  expirationTime: string
-  notBefore: string
-}) => {
-  const roninAddress = address.replace('0x', 'ronin:')
-  const header = `accounts.skymavis.com wants you to sign in with your Ronin account:`
-  const uriField = `URI: http://accounts.skymavis.com/`
-  const statement = `I accept the Terms of Use (https://axieinfinity.com/terms-of-use) and the Privacy Policy (https://axieinfinity.com/privacy-policy)`
-  let prefix = [header, roninAddress].join('\n')
-  const versionField = `Version: ${version}`
-  const chainField = `Chain ID: ` + chainId || '2020'
-  const nonceField = `Nonce: ${nonce}`
-  const suffixArray = [uriField, versionField, chainField, nonceField]
-  suffixArray.push(`Issued At: ${issuedAt}`)
-  suffixArray.push(`Expiration Time: ${expirationTime}`)
-  suffixArray.push(`Not Before: ${notBefore}`)
-  const suffix = suffixArray.join('\n')
-  prefix = [prefix, statement].join('\n\n')
-  prefix += '\n'
-  return [prefix, suffix].join('\n')
-}
