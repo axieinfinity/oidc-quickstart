@@ -2,6 +2,7 @@ import { EIP1193Provider, InitialData } from '@/utils/types'
 import {
   SERVER_RONIN_LINK_WALLET_ENDPOINT,
   SERVER_RONIN_NONCE_ENDPOINT,
+  SERVER_RONIN_TOKEN_ENDPOINT,
   WC_METADATA,
   generateSingingMessage,
   toRoninWalletUniversalLink,
@@ -111,43 +112,82 @@ export default function LinkWallet() {
     return initialData
   }
 
-  const linkWallet = async (
+  const signMessage = async (
     connectHandler: () => Promise<InitialData | null>,
   ) => {
+    const connectData = await connectHandler()
+
+    if (!connectData) return
+
+    const { account: address, chainId } = connectData
+
+    const {
+      data: { nonce, issued_at, not_before, expiration_time },
+    } = await axios({
+      url: SERVER_RONIN_NONCE_ENDPOINT,
+      params: {
+        address,
+      },
+    })
+
+    const message = generateSingingMessage({
+      address,
+      chainId,
+      nonce,
+      issuedAt: issued_at,
+      notBefore: not_before,
+      expirationTime: expiration_time,
+    })
+
+    if (!providerRef.current) return
+
+    const signature = await providerRef.current.request({
+      method: 'personal_sign',
+      params: [message, address],
+    })
+
+    return {
+      address,
+      message,
+      signature,
+    }
+  }
+
+  const loginROPC = async (
+    connectHandler: () => Promise<InitialData | null>,
+  ) => {
+    const { address, message, signature } =
+      (await signMessage(connectHandler)) ?? {}
+
     try {
-      const connectData = await connectHandler()
-
-      if (!connectData) return
-
-      const { account: address, chainId } = connectData
-
-      const {
-        data: { nonce, issued_at, not_before, expiration_time },
-      } = await axios({
-        url: SERVER_RONIN_NONCE_ENDPOINT,
-        params: {
+      const { data } = await axios({
+        url: SERVER_RONIN_TOKEN_ENDPOINT,
+        method: 'POST',
+        data: {
           address,
+          message,
+          signature,
         },
       })
 
-      const message = generateSingingMessage({
-        address,
-        chainId,
-        nonce,
-        issuedAt: issued_at,
-        notBefore: not_before,
-        expirationTime: expiration_time,
-      })
+      setTokenResponse(data)
+    } catch (error: any) {
+      if (isAxiosError(error)) {
+        setError(error?.response?.data)
+        return
+      }
 
-      console.log('message', { message })
+      setError(error?.message ?? error)
+    }
+  }
 
-      if (!providerRef.current) return
+  const linkWallet = async (
+    connectHandler: () => Promise<InitialData | null>,
+  ) => {
+    const { address, message, signature } =
+      (await signMessage(connectHandler)) ?? {}
 
-      const signature = await providerRef.current.request({
-        method: 'personal_sign',
-        params: [message, address],
-      })
-
+    try {
       const { data } = await axios({
         url: SERVER_RONIN_LINK_WALLET_ENDPOINT,
         method: 'POST',
@@ -189,6 +229,41 @@ export default function LinkWallet() {
         showIcon
       />
     )
+
+  if (!accessToken) {
+    return (
+      <div>
+        <h1>LINK WALLET</h1>
+        <Space direction="vertical">
+          <Button onClick={() => loginROPC(connectExtension)} type="primary">
+            Using extension
+          </Button>
+          <Button
+            onClick={() => loginROPC(() => connectMobileWallet('app'))}
+            type="primary"
+          >
+            Using mobile wallet
+          </Button>
+          <Button
+            onClick={() => loginROPC(() => connectMobileWallet('qrcode'))}
+            type="primary"
+          >
+            Using QR code
+          </Button>
+          {isShowQRCode && <QRCode value={uri} size={178} />}
+          <Modal
+            open={isShowUniversalLinkModal}
+            okButtonProps={{ href: toRoninWalletUniversalLink(uri) }}
+            onCancel={() => setIsShowUniversalLinkModal(false)}
+          >
+            <a href={toRoninWalletUniversalLink(uri)}>
+              Click to switch to mobile wallet
+            </a>
+          </Modal>
+        </Space>
+      </div>
+    )
+  }
 
   return (
     <div>
