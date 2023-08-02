@@ -1,3 +1,6 @@
+import { Button, Space } from 'antd'
+import { useRouter } from 'next/router'
+
 const OIDC_CLIENT_ID = process.env.OIDC_CLIENT_ID ?? ''
 const OIDC_AUTHORIZATION_ENDPOINT =
   process.env.OIDC_AUTHORIZATION_ENDPOINT ??
@@ -7,42 +10,38 @@ const OIDC_CALLBACK_URL =
 const OIDC_SCOPE = process.env.OIDC_SCOPE ?? 'openid offline'
 
 export default function Home() {
-  const requestLogin = () => {
+  const router = useRouter()
+  const requestLogin = (configs?: Record<string, string>) => {
     const query = new URLSearchParams({
+      response_type: 'code',
       state: crypto.randomUUID(),
       client_id: OIDC_CLIENT_ID,
       redirect_uri: OIDC_CALLBACK_URL,
-      response_type: 'code',
       scope: OIDC_SCOPE,
+      ...(configs || {}),
     })
 
-    window.open(`${OIDC_AUTHORIZATION_ENDPOINT}?${query.toString()}`, '_self')
+    router.push(`${OIDC_AUTHORIZATION_ENDPOINT}?${query.toString()}`, '_self')
   }
 
   return (
     <main>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginTop: '100px',
-        }}
-      >
-        <h1>Login</h1>
-        <button
-          style={{
-            padding: '12px 32px',
-            borderRadius: 8,
-            border: 'none',
-            cursor: 'pointer',
-          }}
-          onClick={requestLogin}
+      <h1>SCENARIOS</h1>
+      <Space direction="vertical">
+        <Button
+          onClick={() =>
+            requestLogin({
+              providers: 'magic_link,email,apple,google,facebook',
+            })
+          }
+          type="primary"
         >
-          Continue with Sky Mavis SSO
-        </button>
-      </div>
+          Case login in
+        </Button>
+        <Button onClick={() => router.push('/link-wallet')} type="primary">
+          Case not login in
+        </Button>
+      </Space>
     </main>
   )
 }

@@ -15,6 +15,9 @@ const OIDC_TOKEN_ENDPOINT =
 const OIDC_USERINFO_ENDPOINT =
   process.env.OIDC_USERINFO_ENDPOINT ??
   'https://api-gateway.skymavis.com/account/userinfo'
+const OIDC_FETCH_NONCE_ENDPOINT =
+  process.env.OIDC_FETCH_NONCE_ENDPOINT ??
+  'https://athena.skymavis.com/v2/public/auth/ronin/fetch-nonce'
 
 const app = Fastify()
 
@@ -92,9 +95,7 @@ app.post(
       data: body,
     })
 
-    return {
-      data,
-    }
+    return data
   },
 )
 
@@ -138,9 +139,7 @@ app.post(
       data: body,
     })
 
-    return {
-      data,
-    }
+    return data
   },
 )
 
@@ -184,9 +183,7 @@ app.post(
       },
     })
 
-    return {
-      token: data,
-    }
+    return data
   },
 )
 
@@ -216,9 +213,7 @@ app.post(
       },
     })
 
-    return {
-      token: data,
-    }
+    return data
   },
 )
 
@@ -252,9 +247,43 @@ app.post(
       },
     })
 
-    return {
-      token: data,
-    }
+    return data
+  },
+)
+
+/* ------------- Link Ronin wallet ------------ */
+app.post(
+  '/oauth2/ronin/link-wallet',
+  async (
+    req: FastifyRequest<{
+      Body: {
+        message: string
+        signature: string
+        access_token: string
+      }
+    }>,
+  ) => {
+    const { message, signature, access_token } = req.body
+
+    const { data } = await axios({
+      url: OIDC_TOKEN_ENDPOINT,
+      method: 'POST',
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded',
+        'x-api-key': API_KEY,
+      },
+      data: {
+        message,
+        signature,
+        access_token,
+        grant_type: 'link-wallet',
+        scope: OIDC_SCOPE,
+        client_id: OIDC_CLIENT_ID,
+        client_secret: OIDC_CLIENT_SECRET,
+      },
+    })
+
+    return data
   },
 )
 
@@ -273,8 +302,7 @@ app.get(
     const { address } = req.query
 
     const { data } = await axios({
-      baseURL: 'https://athena.skymavis.com/',
-      url: 'v2/public/auth/ronin/fetch-nonce',
+      url: OIDC_FETCH_NONCE_ENDPOINT,
       params: {
         address,
       },
@@ -297,9 +325,7 @@ app.get('/oauth2/userinfo', async req => {
     headers,
   })
 
-  return {
-    data,
-  }
+  return data
 })
 
 /* -------------------------------------------- */

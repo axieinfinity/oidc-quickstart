@@ -7,13 +7,15 @@ const SERVER_TOKEN_ENDPOINT =
   'http://localhost:8080/oauth2/authorization-code/token'
 const OIDC_CALLBACK_URL =
   process.env.OIDC_CALLBACK_URL ?? 'http://localhost:3000/oauth2/callback'
-const SERVER_REFRESH_TOKEN_ENDPOINT = process.env.SERVER_REFRESH_TOKEN_ENDPOINT ?? 'http://localhost:8080/oauth2/authorization-code/refresh_token'
+const SERVER_REFRESH_TOKEN_ENDPOINT =
+  process.env.SERVER_REFRESH_TOKEN_ENDPOINT ??
+  'http://localhost:8080/oauth2/authorization-code/refresh_token'
 
 const Callback = () => {
   const router = useRouter()
   const { code } = router.query
   const [token, setToken] = useState<any>(null)
-  const [newToken, setNewToken]= useState(null);
+  const [newToken, setNewToken] = useState(null)
   const [error, setError] = useState(null)
 
   const exchangeToken = async () => {
@@ -45,7 +47,7 @@ const Callback = () => {
         url: SERVER_REFRESH_TOKEN_ENDPOINT,
         method: 'POST',
         data: {
-          refresh_token: token.data.refresh_token,
+          refresh_token: token.refresh_token,
         },
       })
 
