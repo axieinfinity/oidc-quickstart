@@ -49,26 +49,6 @@ export const WC_METADATA = {
   disableProviderPing: true,
 }
 
-export const setupEventListeners = (provider?: EIP1193Provider) => {
-  if (!provider) return
-
-  provider.on(EIP1193Event.CONNECT, () => {
-    provider.emit(EIP1193Event.CONNECT)
-  })
-
-  provider.on(EIP1193Event.DISCONNECT, (code?: string, reason?: string) => {
-    provider.emit(EIP1193Event.DISCONNECT, code, reason)
-  })
-
-  provider.on(EIP1193Event.ACCOUNTS_CHANGED, (accounts: string[]) => {
-    provider.emit(EIP1193Event.ACCOUNTS_CHANGED, accounts)
-  })
-
-  provider.on(EIP1193Event.CHAIN_CHANGED, (chainId: number) => {
-    provider.emit(EIP1193Event.CHAIN_CHANGED, chainId)
-  })
-}
-
 export const toRoninWalletUniversalLink = (
   uri: string,
   prefix?: string,
@@ -96,15 +76,7 @@ export const generateSingingMessage = ({
   notBefore: string
 }) => {
   return `accounts.skymavis.com wants you to sign in with your Ronin account:
-  ${address.replace('0x', 'ronin:').toLowerCase()}
-
-  I accept the Terms of Use (https://axieinfinity.com/terms-of-use) and the Privacy Policy (https://axieinfinity.com/privacy-policy)
-
-  URI: https://accounts.skymavis.com
-  Version: ${version}
-  Chain ID: ${chainId}
-  Nonce: ${nonce}
-  Issued At: ${issuedAt}
-  Expiration Time: ${expirationTime}
-  Not Before: ${notBefore}`
+  ${address
+    .replace('0x', 'ronin:')
+    .toLowerCase()}\n\nI accept the Terms of Use (https://axieinfinity.com/terms-of-use) and the Privacy Policy (https://axieinfinity.com/privacy-policy)\n\nURI: https://accounts.skymavis.com\nVersion: ${version}\nChain ID: ${chainId}\nNonce: ${nonce}\nIssued At: ${issuedAt}\nExpiration Time: ${expirationTime}\nNot Before: ${notBefore}`
 }

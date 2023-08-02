@@ -139,9 +139,7 @@ app.post(
       data: body,
     })
 
-    return {
-      data,
-    }
+    return data
   },
 )
 
@@ -185,9 +183,7 @@ app.post(
       },
     })
 
-    return {
-      token: data,
-    }
+    return data
   },
 )
 
@@ -217,9 +213,7 @@ app.post(
       },
     })
 
-    return {
-      token: data,
-    }
+    return data
   },
 )
 
@@ -253,9 +247,7 @@ app.post(
       },
     })
 
-    return {
-      token: data,
-    }
+    return data
   },
 )
 
@@ -265,25 +257,13 @@ app.post(
   async (
     req: FastifyRequest<{
       Body: {
-        redirect_uri: string
         message: string
         signature: string
         access_token: string
       }
     }>,
   ) => {
-    const { redirect_uri, message, signature, access_token } = req.body
-
-    console.log('data', {
-      message,
-      signature,
-      access_token,
-      redirect_uri,
-      grant_type: 'link-wallet',
-      scope: OIDC_SCOPE,
-      client_id: OIDC_CLIENT_ID,
-      client_secret: OIDC_CLIENT_SECRET,
-    })
+    const { message, signature, access_token } = req.body
 
     const { data } = await axios({
       url: OIDC_TOKEN_ENDPOINT,
@@ -296,7 +276,6 @@ app.post(
         message,
         signature,
         access_token,
-        redirect_uri,
         grant_type: 'link-wallet',
         scope: OIDC_SCOPE,
         client_id: OIDC_CLIENT_ID,

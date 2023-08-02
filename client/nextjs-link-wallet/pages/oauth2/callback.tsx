@@ -137,6 +137,7 @@ const Callback = () => {
               {user && !user?.roninAddress && (
                 <Button
                   type="primary"
+                  style={{ marginBottom: 24 }}
                   // Note: You should storage the access token some where instead.
                   onClick={() =>
                     router.push(

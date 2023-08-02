@@ -52,7 +52,7 @@ export default function Home() {
 
       setMFALoading(false)
 
-      setToken(data.token)
+      setToken(data)
 
       setMFAData(prev => ({
         ...prev,
@@ -122,7 +122,7 @@ export default function Home() {
 
       setLoginLoading(false)
 
-      setToken(data.token)
+      setToken(data)
 
       notify.info({
         message: 'Login successful!',

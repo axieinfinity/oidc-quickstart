@@ -1,12 +1,9 @@
 import { EIP1193Provider, InitialData } from '@/utils/types'
 import {
-  LINK_WALLET_REDIRECT_URI,
   SERVER_RONIN_LINK_WALLET_ENDPOINT,
   SERVER_RONIN_NONCE_ENDPOINT,
-  SERVER_RONIN_TOKEN_ENDPOINT,
   WC_METADATA,
   generateSingingMessage,
-  setupEventListeners,
   toRoninWalletUniversalLink,
 } from '@/utils'
 import { Alert, Button, Modal, Space } from 'antd'
@@ -28,7 +25,6 @@ declare global {
 export default function LinkWallet() {
   const router = useRouter()
   const accessToken = (router.query?.access_token ?? '') as string
-  const isLoggedIn = !!accessToken
 
   const providerRef = useRef<
     EIP1193Provider | InstanceType<typeof EthereumProvider> | null
@@ -36,7 +32,7 @@ export default function LinkWallet() {
   const [isShowUniversalLinkModal, setIsShowUniversalLinkModal] =
     useState(false)
   const [isShowQRCode, setIsShowQRCode] = useState(false)
-  const [token, setToken] = useState(null)
+  const [tokenResponse, setTokenResponse] = useState(null)
   const [uri, setUri] = useState('')
   const [error, setError] = useState('')
 
@@ -48,7 +44,6 @@ export default function LinkWallet() {
 
     const provider = window.ronin.provider
     providerRef.current = provider
-    setupEventListeners()
 
     await provider.request?.({
       method: 'eth_requestAccounts',
@@ -144,6 +139,8 @@ export default function LinkWallet() {
         expirationTime: expiration_time,
       })
 
+      console.log('message', { message })
+
       if (!providerRef.current) return
 
       const signature = await providerRef.current.request({
@@ -155,7 +152,6 @@ export default function LinkWallet() {
         url: SERVER_RONIN_LINK_WALLET_ENDPOINT,
         method: 'POST',
         data: {
-          redirect_uri: LINK_WALLET_REDIRECT_URI,
           access_token: accessToken,
           address,
           message,
@@ -163,7 +159,7 @@ export default function LinkWallet() {
         },
       })
 
-      setToken(data.token)
+      setTokenResponse(data)
     } catch (error: any) {
       if (isAxiosError(error)) {
         setError(error?.response?.data)
@@ -196,34 +192,59 @@ export default function LinkWallet() {
 
   return (
     <div>
-      <h1>LINK WALLET</h1>
-      <Space direction="vertical">
-        <Button onClick={() => linkWallet(connectExtension)} type="primary">
-          Using extension
-        </Button>
-        <Button
-          onClick={() => linkWallet(() => connectMobileWallet('app'))}
-          type="primary"
-        >
-          Using mobile wallet
-        </Button>
-        <Button
-          onClick={() => linkWallet(() => connectMobileWallet('qrcode'))}
-          type="primary"
-        >
-          Using QRCode
-        </Button>
-        {isShowQRCode && <QRCode value={uri} size={178} />}
-        <Modal
-          open={isShowUniversalLinkModal}
-          okButtonProps={{ href: toRoninWalletUniversalLink(uri) }}
-          onCancel={() => setIsShowUniversalLinkModal(false)}
-        >
-          <a href={toRoninWalletUniversalLink(uri)}>
-            Click to switch to mobile wallet
-          </a>
-        </Modal>
-      </Space>
+      {!tokenResponse && (
+        <>
+          <h1>LINK WALLET</h1>
+          <Space direction="vertical">
+            <Button onClick={() => linkWallet(connectExtension)} type="primary">
+              Using extension
+            </Button>
+            <Button
+              onClick={() => linkWallet(() => connectMobileWallet('app'))}
+              type="primary"
+            >
+              Using mobile wallet
+            </Button>
+            <Button
+              onClick={() => linkWallet(() => connectMobileWallet('qrcode'))}
+              type="primary"
+            >
+              Using QR code
+            </Button>
+            {isShowQRCode && <QRCode value={uri} size={178} />}
+            <Modal
+              open={isShowUniversalLinkModal}
+              okButtonProps={{ href: toRoninWalletUniversalLink(uri) }}
+              onCancel={() => setIsShowUniversalLinkModal(false)}
+            >
+              <a href={toRoninWalletUniversalLink(uri)}>
+                Click to switch to mobile wallet
+              </a>
+            </Modal>
+          </Space>
+        </>
+      )}
+
+      {tokenResponse && (
+        <>
+          <Alert
+            style={{ width: 600 }}
+            type="success"
+            message="Congratulation!"
+            description="Link wallet successful."
+          />
+          <pre
+            style={{
+              whiteSpace: 'pre-wrap',
+              width: 600,
+              overflow: 'auto',
+              marginBottom: 24,
+            }}
+          >
+            {JSON.stringify(tokenResponse, null, 2)}
+          </pre>
+        </>
+      )}
     </div>
   )
 }
