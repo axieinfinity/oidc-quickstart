@@ -35,10 +35,10 @@ export const WC_METADATA = {
   rpcMap: WC_RPC_MAP,
   methods: WC_SUPPORTED_METHODS,
   metadata: {
-    name: 'Sky Mavis Account',
-    description: 'Connect to Ronin Wallet from Sky Mavis Account',
+    name: 'Demo',
+    description: 'Demo',
     icons: [],
-    url: 'https://accounts.skymavis.com',
+    url: 'http://localhost:3000',
   },
   showQrModal: false,
   disableProviderPing: true,
