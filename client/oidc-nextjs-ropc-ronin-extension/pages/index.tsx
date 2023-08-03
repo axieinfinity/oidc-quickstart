@@ -35,10 +35,20 @@ export const generateSingingMessage = ({
   expirationTime: string
   notBefore: string
 }) => {
-  return `accounts.skymavis.com wants you to sign in with your Ronin account:
-  ${address
-    .replace('0x', 'ronin:')
-    .toLowerCase()}\n\nI accept the Terms of Use (https://axieinfinity.com/terms-of-use) and the Privacy Policy (https://axieinfinity.com/privacy-policy)\n\nURI: https://accounts.skymavis.com\nVersion: ${version}\nChain ID: ${chainId}\nNonce: ${nonce}\nIssued At: ${issuedAt}\nExpiration Time: ${expirationTime}\nNot Before: ${notBefore}`
+  const { hostname, pathname, origin } = window.location
+
+  return `${hostname} wants you to sign in with your Ronin account:
+${address.replace('0x', 'ronin:').toLowerCase()}
+
+I accept the Terms of Use (https://axieinfinity.com/terms-of-use) and the Privacy Policy (https://axieinfinity.com/privacy-policy)
+
+URI: ${origin + pathname}
+Version: ${version}
+Chain ID: ${chainId}
+Nonce: ${nonce}
+Issued At: ${issuedAt}
+Expiration Time: ${expirationTime}
+Not Before: ${notBefore}`
 }
 
 export default function Home() {
