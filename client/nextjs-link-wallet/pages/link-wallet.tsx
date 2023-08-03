@@ -156,13 +156,13 @@ export default function LinkWallet() {
   const loginROPC = async (
     connectHandler: () => Promise<InitialData | null>,
   ) => {
-    const signMessageData = await signMessage(connectHandler)
-
-    if (!signMessageData) return
-
-    const { address, message, signature } = signMessageData
-
     try {
+      const signMessageData = await signMessage(connectHandler)
+
+      if (!signMessageData) return
+
+      const { address, message, signature } = signMessageData
+
       const { data } = await axios({
         url: SERVER_RONIN_TOKEN_ENDPOINT,
         method: 'POST',
@@ -187,14 +187,13 @@ export default function LinkWallet() {
   const linkWallet = async (
     connectHandler: () => Promise<InitialData | null>,
   ) => {
-    const signMessageData = await signMessage(connectHandler)
-    console.log('signMessageData', signMessageData)
-
-    if (!signMessageData) return
-
-    const { address, message, signature } = signMessageData
-
     try {
+      const signMessageData = await signMessage(connectHandler)
+
+      if (!signMessageData) return
+
+      const { address, message, signature } = signMessageData
+
       const { data } = await axios({
         url: SERVER_RONIN_LINK_WALLET_ENDPOINT,
         method: 'POST',
