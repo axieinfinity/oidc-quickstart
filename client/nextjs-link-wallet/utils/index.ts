@@ -53,7 +53,7 @@ export const toRoninWalletUniversalLink = (
   return `${prefix}auth-connect?uri=${encoded}`
 }
 
-export const generateSingingMessage = ({
+export const generateSigningMessage = ({
   address,
   version = 1,
   chainId = 2020,

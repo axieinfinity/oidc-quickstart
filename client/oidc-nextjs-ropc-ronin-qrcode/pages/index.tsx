@@ -34,7 +34,7 @@ type InitialData = {
   chainId: number
 }
 
-export const generateSingingMessage = ({
+export const generateSigningMessage = ({
   address,
   version = 1,
   chainId = 2020,
@@ -135,7 +135,7 @@ export default function Home() {
         },
       })
 
-      const message = generateSingingMessage({
+      const message = generateSigningMessage({
         address,
         chainId,
         nonce,
