@@ -4,7 +4,7 @@ import {
   SERVER_RONIN_NONCE_ENDPOINT,
   SERVER_RONIN_TOKEN_ENDPOINT,
   WC_METADATA,
-  generateSingingMessage,
+  generateSigningMessage,
   toRoninWalletUniversalLink,
 } from '@/utils'
 import { Alert, Button, Modal, Space } from 'antd'
@@ -130,7 +130,7 @@ export default function LinkWallet() {
       },
     })
 
-    const message = generateSingingMessage({
+    const message = generateSigningMessage({
       address,
       chainId,
       nonce,

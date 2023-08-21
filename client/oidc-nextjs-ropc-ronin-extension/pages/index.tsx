@@ -18,7 +18,7 @@ const SERVER_RONIN_TOKEN_ENDPOINT =
   process.env.SERVER_RONIN_TOKEN_ENDPOINT ??
   'http://localhost:8080/oauth2/ronin/token'
 
-export const generateSingingMessage = ({
+export const generateSigningMessage = ({
   address,
   version = 1,
   chainId = 2020,
@@ -101,7 +101,7 @@ export default function Home() {
         },
       })
 
-      const message = generateSingingMessage({
+      const message = generateSigningMessage({
         address,
         chainId,
         nonce,
