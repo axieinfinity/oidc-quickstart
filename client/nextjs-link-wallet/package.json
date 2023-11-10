@@ -15,7 +15,7 @@
     "@walletconnect/ethereum-provider": "2.7.6",
     "@web3modal/standalone": "2.4.1",
     "antd": "^5.7.3",
-    "axios": "^1.4.0",
+    "axios": "^1.6.0",
     "dotenv": "^16.3.1",
     "next": "13.4.6",
     "qrcode.react": "^3.1.0",
