@@ -94,9 +94,6 @@ SERVER_RONIN_TOKEN_ENDPOINT=http://localhost:8080/oauth2/ronin/token
 
 # ELECTRON ENV
 CALLBACK_DEEPLINK=mavis-electron-app://oauth2/callback
-
-# CAPTCHA ENV
-GEETEST_ENDPOINT=https://captcha.skymavis.com/api/geetest/register
 ```
 
 ## Integrate Sky Mavis Account sign-in

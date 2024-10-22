@@ -42,3 +42,5 @@ dev
 
 # Electron
 out
+
+/client/oidc-nextjs-ropc-backup
